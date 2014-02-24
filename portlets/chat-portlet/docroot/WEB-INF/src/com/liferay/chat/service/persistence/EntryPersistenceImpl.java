@@ -111,6 +111,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByCreateDate(long createDate)
 		throws SystemException {
 		return findByCreateDate(createDate, QueryUtil.ALL_POS,
@@ -130,6 +131,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByCreateDate(long createDate, int start, int end)
 		throws SystemException {
 		return findByCreateDate(createDate, start, end, null);
@@ -149,6 +151,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByCreateDate(long createDate, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -255,6 +258,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByCreateDate_First(long createDate,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -284,6 +288,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByCreateDate_First(long createDate,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByCreateDate(createDate, 0, 1, orderByComparator);
@@ -304,6 +309,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByCreateDate_Last(long createDate,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -333,9 +339,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByCreateDate_Last(long createDate,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCreateDate(createDate);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByCreateDate(createDate, count - 1, count,
 				orderByComparator);
@@ -357,6 +368,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByCreateDate_PrevAndNext(long entryId, long createDate,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -497,6 +509,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param createDate the create date
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCreateDate(long createDate) throws SystemException {
 		for (Entry entry : findByCreateDate(createDate, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -511,6 +524,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCreateDate(long createDate) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_CREATEDATE;
 
@@ -586,6 +600,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByFromUserId(long fromUserId)
 		throws SystemException {
 		return findByFromUserId(fromUserId, QueryUtil.ALL_POS,
@@ -605,6 +620,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByFromUserId(long fromUserId, int start, int end)
 		throws SystemException {
 		return findByFromUserId(fromUserId, start, end, null);
@@ -624,6 +640,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByFromUserId(long fromUserId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -730,6 +747,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByFromUserId_First(long fromUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -759,6 +777,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByFromUserId_First(long fromUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByFromUserId(fromUserId, 0, 1, orderByComparator);
@@ -779,6 +798,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByFromUserId_Last(long fromUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -808,9 +828,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByFromUserId_Last(long fromUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByFromUserId(fromUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByFromUserId(fromUserId, count - 1, count,
 				orderByComparator);
@@ -832,6 +857,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByFromUserId_PrevAndNext(long entryId, long fromUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -972,6 +998,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param fromUserId the from user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByFromUserId(long fromUserId) throws SystemException {
 		for (Entry entry : findByFromUserId(fromUserId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -986,6 +1013,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByFromUserId(long fromUserId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_FROMUSERID;
 
@@ -1060,6 +1088,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByToUserId(long toUserId) throws SystemException {
 		return findByToUserId(toUserId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			null);
@@ -1078,6 +1107,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByToUserId(long toUserId, int start, int end)
 		throws SystemException {
 		return findByToUserId(toUserId, start, end, null);
@@ -1097,6 +1127,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByToUserId(long toUserId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1203,6 +1234,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByToUserId_First(long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1232,6 +1264,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByToUserId_First(long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByToUserId(toUserId, 0, 1, orderByComparator);
@@ -1252,6 +1285,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByToUserId_Last(long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1281,9 +1315,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByToUserId_Last(long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByToUserId(toUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByToUserId(toUserId, count - 1, count,
 				orderByComparator);
@@ -1305,6 +1344,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByToUserId_PrevAndNext(long entryId, long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1445,6 +1485,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param toUserId the to user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByToUserId(long toUserId) throws SystemException {
 		for (Entry entry : findByToUserId(toUserId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1459,6 +1500,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByToUserId(long toUserId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_TOUSERID;
 
@@ -1533,6 +1575,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F(long createDate, long fromUserId)
 		throws SystemException {
 		return findByC_F(createDate, fromUserId, QueryUtil.ALL_POS,
@@ -1553,6 +1596,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F(long createDate, long fromUserId, int start,
 		int end) throws SystemException {
 		return findByC_F(createDate, fromUserId, start, end, null);
@@ -1573,6 +1617,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F(long createDate, long fromUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1689,6 +1734,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_F_First(long createDate, long fromUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1722,6 +1768,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_F_First(long createDate, long fromUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByC_F(createDate, fromUserId, 0, 1,
@@ -1744,6 +1791,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_F_Last(long createDate, long fromUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1777,9 +1825,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_F_Last(long createDate, long fromUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByC_F(createDate, fromUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByC_F(createDate, fromUserId, count - 1, count,
 				orderByComparator);
@@ -1802,6 +1855,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByC_F_PrevAndNext(long entryId, long createDate,
 		long fromUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -1948,6 +2002,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param fromUserId the from user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_F(long createDate, long fromUserId)
 		throws SystemException {
 		for (Entry entry : findByC_F(createDate, fromUserId, QueryUtil.ALL_POS,
@@ -1964,6 +2019,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_F(long createDate, long fromUserId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_F;
@@ -2044,6 +2100,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_T(long createDate, long toUserId)
 		throws SystemException {
 		return findByC_T(createDate, toUserId, QueryUtil.ALL_POS,
@@ -2064,6 +2121,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_T(long createDate, long toUserId, int start,
 		int end) throws SystemException {
 		return findByC_T(createDate, toUserId, start, end, null);
@@ -2084,6 +2142,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_T(long createDate, long toUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2200,6 +2259,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_T_First(long createDate, long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2233,6 +2293,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_T_First(long createDate, long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByC_T(createDate, toUserId, 0, 1,
@@ -2255,6 +2316,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_T_Last(long createDate, long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2288,9 +2350,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_T_Last(long createDate, long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByC_T(createDate, toUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByC_T(createDate, toUserId, count - 1, count,
 				orderByComparator);
@@ -2313,6 +2380,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByC_T_PrevAndNext(long entryId, long createDate,
 		long toUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2459,6 +2527,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param toUserId the to user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_T(long createDate, long toUserId)
 		throws SystemException {
 		for (Entry entry : findByC_T(createDate, toUserId, QueryUtil.ALL_POS,
@@ -2475,6 +2544,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_T(long createDate, long toUserId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_T;
@@ -2556,6 +2626,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T(long fromUserId, long toUserId)
 		throws SystemException {
 		return findByF_T(fromUserId, toUserId, QueryUtil.ALL_POS,
@@ -2576,6 +2647,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T(long fromUserId, long toUserId, int start,
 		int end) throws SystemException {
 		return findByF_T(fromUserId, toUserId, start, end, null);
@@ -2596,6 +2668,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T(long fromUserId, long toUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2712,6 +2785,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByF_T_First(long fromUserId, long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2745,6 +2819,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByF_T_First(long fromUserId, long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Entry> list = findByF_T(fromUserId, toUserId, 0, 1,
@@ -2767,6 +2842,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByF_T_Last(long fromUserId, long toUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2800,9 +2876,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByF_T_Last(long fromUserId, long toUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByF_T(fromUserId, toUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByF_T(fromUserId, toUserId, count - 1, count,
 				orderByComparator);
@@ -2825,6 +2906,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByF_T_PrevAndNext(long entryId, long fromUserId,
 		long toUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -2971,6 +3053,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param toUserId the to user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByF_T(long fromUserId, long toUserId)
 		throws SystemException {
 		for (Entry entry : findByF_T(fromUserId, toUserId, QueryUtil.ALL_POS,
@@ -2987,6 +3070,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByF_T(long fromUserId, long toUserId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_T;
@@ -3073,6 +3157,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F_T(long createDate, long fromUserId,
 		long toUserId) throws SystemException {
 		return findByC_F_T(createDate, fromUserId, toUserId, QueryUtil.ALL_POS,
@@ -3094,6 +3179,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F_T(long createDate, long fromUserId,
 		long toUserId, int start, int end) throws SystemException {
 		return findByC_F_T(createDate, fromUserId, toUserId, start, end, null);
@@ -3115,6 +3201,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByC_F_T(long createDate, long fromUserId,
 		long toUserId, int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3238,6 +3325,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_F_T_First(long createDate, long fromUserId,
 		long toUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -3276,6 +3364,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_F_T_First(long createDate, long fromUserId,
 		long toUserId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3300,6 +3389,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByC_F_T_Last(long createDate, long fromUserId,
 		long toUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -3338,10 +3428,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByC_F_T_Last(long createDate, long fromUserId,
 		long toUserId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByC_F_T(createDate, fromUserId, toUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByC_F_T(createDate, fromUserId, toUserId,
 				count - 1, count, orderByComparator);
@@ -3365,6 +3460,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByC_F_T_PrevAndNext(long entryId, long createDate,
 		long fromUserId, long toUserId, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -3516,6 +3612,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param toUserId the to user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_F_T(long createDate, long fromUserId, long toUserId)
 		throws SystemException {
 		for (Entry entry : findByC_F_T(createDate, fromUserId, toUserId,
@@ -3533,6 +3630,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_F_T(long createDate, long fromUserId, long toUserId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_F_T;
@@ -3628,6 +3726,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T_C(long fromUserId, long toUserId,
 		String content) throws SystemException {
 		return findByF_T_C(fromUserId, toUserId, content, QueryUtil.ALL_POS,
@@ -3649,6 +3748,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T_C(long fromUserId, long toUserId,
 		String content, int start, int end) throws SystemException {
 		return findByF_T_C(fromUserId, toUserId, content, start, end, null);
@@ -3670,6 +3770,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findByF_T_C(long fromUserId, long toUserId,
 		String content, int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3807,6 +3908,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByF_T_C_First(long fromUserId, long toUserId,
 		String content, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -3845,6 +3947,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByF_T_C_First(long fromUserId, long toUserId,
 		String content, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3869,6 +3972,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByF_T_C_Last(long fromUserId, long toUserId,
 		String content, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -3907,10 +4011,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByF_T_C_Last(long fromUserId, long toUserId,
 		String content, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByF_T_C(fromUserId, toUserId, content);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Entry> list = findByF_T_C(fromUserId, toUserId, content,
 				count - 1, count, orderByComparator);
@@ -3934,6 +4043,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry[] findByF_T_C_PrevAndNext(long entryId, long fromUserId,
 		long toUserId, String content, OrderByComparator orderByComparator)
 		throws NoSuchEntryException, SystemException {
@@ -4099,6 +4209,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param content the content
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByF_T_C(long fromUserId, long toUserId, String content)
 		throws SystemException {
 		for (Entry entry : findByF_T_C(fromUserId, toUserId, content,
@@ -4116,6 +4227,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of matching entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByF_T_C(long fromUserId, long toUserId, String content)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_T_C;
@@ -4190,11 +4302,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	private static final String _FINDER_COLUMN_F_T_C_CONTENT_2 = "entry.content = ?";
 	private static final String _FINDER_COLUMN_F_T_C_CONTENT_3 = "(entry.content IS NULL OR entry.content = '')";
 
+	public EntryPersistenceImpl() {
+		setModelClass(Entry.class);
+	}
+
 	/**
 	 * Caches the entry in the entity cache if it is enabled.
 	 *
 	 * @param entry the entry
 	 */
+	@Override
 	public void cacheResult(Entry entry) {
 		EntityCacheUtil.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
 			EntryImpl.class, entry.getPrimaryKey(), entry);
@@ -4207,6 +4324,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 *
 	 * @param entries the entries
 	 */
+	@Override
 	public void cacheResult(List<Entry> entries) {
 		for (Entry entry : entries) {
 			if (EntityCacheUtil.getResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
@@ -4232,7 +4350,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			CacheRegistryUtil.clear(EntryImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(EntryImpl.class.getName());
+		EntityCacheUtil.clearCache(EntryImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -4272,6 +4390,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @param entryId the primary key for the new entry
 	 * @return the new entry
 	 */
+	@Override
 	public Entry create(long entryId) {
 		Entry entry = new EntryImpl();
 
@@ -4289,6 +4408,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry remove(long entryId)
 		throws NoSuchEntryException, SystemException {
 		return remove((Serializable)entryId);
@@ -4569,7 +4689,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 
 		EntityCacheUtil.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryImpl.class, entry.getPrimaryKey(), entry);
+			EntryImpl.class, entry.getPrimaryKey(), entry, false);
+
+		entry.resetOriginalValues();
 
 		return entry;
 	}
@@ -4627,6 +4749,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws com.liferay.chat.NoSuchEntryException if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry findByPrimaryKey(long entryId)
 		throws NoSuchEntryException, SystemException {
 		return findByPrimaryKey((Serializable)entryId);
@@ -4686,6 +4809,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the entry, or <code>null</code> if a entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Entry fetchByPrimaryKey(long entryId) throws SystemException {
 		return fetchByPrimaryKey((Serializable)entryId);
 	}
@@ -4696,6 +4820,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -4712,6 +4837,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -4729,6 +4855,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Entry> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -4814,6 +4941,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Entry entry : findAll()) {
 			remove(entry);
@@ -4826,6 +4954,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the number of entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -4912,6 +5041,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		};
 
 	private static CacheModel<Entry> _nullEntryCacheModel = new CacheModel<Entry>() {
+			@Override
 			public Entry toEntityModel() {
 				return _nullEntry;
 			}

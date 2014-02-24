@@ -14,47 +14,36 @@
 
 package com.liferay.socialnetworking.friends.social;
 
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.social.model.BaseSocialActivityInterpreter;
 import com.liferay.portlet.social.model.SocialActivity;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Zsolt Berentey
  */
 public class FriendsActivityInterpreter extends BaseSocialActivityInterpreter {
 
+	@Override
 	public String[] getClassNames() {
 		return _CLASS_NAMES;
 	}
 
 	@Override
-	protected String getLink(SocialActivity activity, ThemeDisplay themeDisplay)
+	protected String getLink(
+			SocialActivity activity, ServiceContext serviceContext)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(themeDisplay.getPathFriendlyURLPublic());
-		sb.append(StringPool.SLASH);
-
-		User creatorUser = UserLocalServiceUtil.getUserById(
-			activity.getUserId());
-
-		sb.append(HtmlUtil.escapeURL(creatorUser.getScreenName()));
-
-		return sb.toString();
+		return getUserName(activity.getReceiverUserId(), serviceContext);
 	}
 
 	@Override
 	protected Object[] getTitleArguments(
 			String groupName, SocialActivity activity, String link,
-			String title, ThemeDisplay themeDisplay)
+			String title, ServiceContext serviceContext)
 		throws Exception {
 
 		int activityType = activity.getType();
@@ -63,43 +52,12 @@ public class FriendsActivityInterpreter extends BaseSocialActivityInterpreter {
 			return new Object[0];
 		}
 
-		StringBundler sb = new StringBundler(5);
-
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(themeDisplay.getPathFriendlyURLPublic());
-		sb.append(StringPool.SLASH);
-
-		User creatorUser = UserLocalServiceUtil.getUserById(
-			activity.getUserId());
-
-		sb.append(HtmlUtil.escapeURL(creatorUser.getScreenName()));
-
-		sb.append("/profile");
-
 		String creatorUserName = getUserName(
-			activity.getUserId(), themeDisplay);
-
-		String creatorUserNameURL = wrapLink(sb.toString(), creatorUserName);
-
-		sb = new StringBundler(5);
-
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(themeDisplay.getPathFriendlyURLPublic());
-		sb.append(StringPool.SLASH);
-
-		User receiverUser = UserLocalServiceUtil.getUserById(
-			activity.getReceiverUserId());
-
-		sb.append(HtmlUtil.escapeURL(receiverUser.getScreenName()));
-
-		sb.append("/profile");
-
+			activity.getUserId(), serviceContext);
 		String receiverUserName = getUserName(
-			activity.getReceiverUserId(), themeDisplay);
+			activity.getReceiverUserId(), serviceContext);
 
-		String receiverUserNameURL = wrapLink(sb.toString(), receiverUserName);
-
-		return new Object[] {creatorUserNameURL, receiverUserNameURL};
+		return new Object[] {creatorUserName, receiverUserName};
 	}
 
 	@Override
@@ -118,7 +76,7 @@ public class FriendsActivityInterpreter extends BaseSocialActivityInterpreter {
 	@Override
 	protected boolean hasPermissions(
 		PermissionChecker permissionChecker, SocialActivity activity,
-		String actionId, ThemeDisplay themeDisplay) {
+		String actionId, ServiceContext serviceContext) {
 
 		return true;
 	}

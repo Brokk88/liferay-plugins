@@ -89,26 +89,32 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	public ModuleModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setModuleId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Module.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Module.class.getName();
 	}
@@ -121,6 +127,9 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		attributes.put("moduleId", getModuleId());
 		attributes.put("appId", getAppId());
 		attributes.put("contextName", getContextName());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -152,6 +161,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -161,6 +171,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -173,18 +184,22 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	public long getModuleId() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setModuleId(long moduleId) {
 		_moduleId = moduleId;
 	}
 
+	@Override
 	public long getAppId() {
 		return _appId;
 	}
 
+	@Override
 	public void setAppId(long appId) {
 		_columnBitmask |= APPID_COLUMN_BITMASK;
 
@@ -201,6 +216,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return _originalAppId;
 	}
 
+	@Override
 	public String getContextName() {
 		if (_contextName == null) {
 			return StringPool.BLANK;
@@ -210,6 +226,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setContextName(String contextName) {
 		_columnBitmask |= CONTEXTNAME_COLUMN_BITMASK;
 
@@ -265,6 +282,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return moduleImpl;
 	}
 
+	@Override
 	public int compareTo(Module module) {
 		long primaryKey = module.getPrimaryKey();
 
@@ -281,18 +299,15 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Module)) {
 			return false;
 		}
 
-		Module module = null;
-
-		try {
-			module = (Module)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Module module = (Module)obj;
 
 		long primaryKey = module.getPrimaryKey();
 
@@ -307,6 +322,16 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -368,6 +393,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(16);
 

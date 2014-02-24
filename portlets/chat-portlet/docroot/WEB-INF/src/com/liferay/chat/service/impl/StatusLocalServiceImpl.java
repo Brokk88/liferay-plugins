@@ -20,18 +20,23 @@ import com.liferay.chat.model.EntryConstants;
 import com.liferay.chat.model.Status;
 import com.liferay.chat.service.base.StatusLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Tibor Lipusz
  */
 public class StatusLocalServiceImpl extends StatusLocalServiceBaseImpl {
 
+	@Override
 	public List<Object[]> getAllStatuses(
 			long companyId, long userId, long modifiedDate, int start, int end)
 		throws SystemException {
@@ -40,6 +45,7 @@ public class StatusLocalServiceImpl extends StatusLocalServiceBaseImpl {
 			companyId, userId, modifiedDate, start, end);
 	}
 
+	@Override
 	public List<Object[]> getGroupStatuses(
 			long userId, long modifiedDate, String[] groupNames, int start,
 			int end)
@@ -49,14 +55,25 @@ public class StatusLocalServiceImpl extends StatusLocalServiceBaseImpl {
 			userId, modifiedDate, groupNames, start, end);
 	}
 
+	@Override
 	public List<Object[]> getSocialStatuses(
 			long userId, int type, long modifiedDate, int start, int end)
 		throws SystemException {
 
-		return statusFinder.findBySocialRelationType(
-			userId, type, modifiedDate, start, end);
+		return getSocialStatuses(
+			userId, new int[] {type}, modifiedDate, start, end);
 	}
 
+	@Override
+	public List<Object[]> getSocialStatuses(
+			long userId, int[] types, long modifiedDate, int start, int end)
+		throws SystemException {
+
+		return statusFinder.findBySocialRelationTypes(
+			userId, types, modifiedDate, start, end);
+	}
+
+	@Override
 	public Status getUserStatus(long userId) throws SystemException {
 		Status status = statusPersistence.fetchByUserId(userId);
 
@@ -69,15 +86,17 @@ public class StatusLocalServiceImpl extends StatusLocalServiceBaseImpl {
 		return status;
 	}
 
+	@Override
 	public Status updateStatus(long userId, long modifiedDate)
 		throws SystemException {
 
 		return updateStatus(userId, modifiedDate, -1, -1, null, null, -1);
 	}
 
+	@Override
 	public Status updateStatus(
 			long userId, long modifiedDate, int online, int awake,
-			String activePanelId, String message, int playSound)
+			String activePanelIds, String message, int playSound)
 		throws SystemException {
 
 		Status status = statusPersistence.fetchByUserId(userId);
@@ -102,17 +121,28 @@ public class StatusLocalServiceImpl extends StatusLocalServiceBaseImpl {
 			status.setAwake((awake == 1) ? true : false);
 		}
 
-		if (activePanelId != null) {
-			List<Entry> entries = entryPersistence.findByF_T(
-				GetterUtil.getLong(activePanelId), userId);
+		if (Validator.isNotNull(activePanelIds)) {
+			try {
+				JSONObject activePanelIdsJSONObject =
+					JSONFactoryUtil.createJSONObject(activePanelIds);
 
-			for (Entry entry : entries) {
-				entry.setFlag(EntryConstants.FLAG_READ);
+				long openPanelId = activePanelIdsJSONObject.getLong("open");
 
-				entryPersistence.update(entry);
+				List<Entry> entries = entryPersistence.findByF_T(
+					openPanelId, userId);
+
+				for (Entry entry : entries) {
+					entry.setFlag(EntryConstants.FLAG_READ);
+
+					entryPersistence.update(entry);
+				}
+			}
+			catch (JSONException jsone) {
+				_log.error(
+					"Unable to create a JSON object from " + activePanelIds);
 			}
 
-			status.setActivePanelId(activePanelId);
+			status.setActivePanelIds(activePanelIds);
 		}
 
 		if (message != null) {

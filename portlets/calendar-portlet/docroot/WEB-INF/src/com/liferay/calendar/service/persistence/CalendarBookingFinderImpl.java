@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -47,12 +48,13 @@ public class CalendarBookingFinderImpl
 			".countByC_G_C_C_P_T_D_L_S_E_S";
 
 	public static final String FIND_BY_FUTURE_REMINDERS =
-	CalendarBookingFinder.class.getName() + ".findByFutureReminders";
+		CalendarBookingFinder.class.getName() + ".findByFutureReminders";
 
 	public static final String FIND_BY_C_G_C_C_P_T_D_L_S_E_S =
 		CalendarBookingFinder.class.getName() +
 			".findByC_G_C_C_P_T_D_L_S_E_S";
 
+	@Override
 	public int countByKeywords(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -79,6 +81,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -96,6 +99,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -109,6 +113,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator, false);
 	}
 
+	@Override
 	public int filterCountByKeywords(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -135,6 +140,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -152,6 +158,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -165,6 +172,7 @@ public class CalendarBookingFinderImpl
 			endTime, statuses, andOperator, true);
 	}
 
+	@Override
 	public List<CalendarBooking> filterFindByKeywords(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -194,6 +202,7 @@ public class CalendarBookingFinderImpl
 			orderByComparator);
 	}
 
+	@Override
 	public List<CalendarBooking> filterFindByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -214,6 +223,7 @@ public class CalendarBookingFinderImpl
 			orderByComparator);
 	}
 
+	@Override
 	public List<CalendarBooking> filterFindByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -230,6 +240,7 @@ public class CalendarBookingFinderImpl
 			orderByComparator, true);
 	}
 
+	@Override
 	public List<CalendarBooking> findByFutureReminders(long startTime)
 		throws SystemException {
 
@@ -240,7 +251,7 @@ public class CalendarBookingFinderImpl
 
 			String sql = CustomSQLUtil.get(FIND_BY_FUTURE_REMINDERS);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("CalendarBooking", CalendarBookingImpl.class);
 
@@ -258,6 +269,7 @@ public class CalendarBookingFinderImpl
 		}
 	}
 
+	@Override
 	public List<CalendarBooking> findByKeywords(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -287,6 +299,7 @@ public class CalendarBookingFinderImpl
 			orderByComparator);
 	}
 
+	@Override
 	public List<CalendarBooking> findByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -307,6 +320,7 @@ public class CalendarBookingFinderImpl
 			orderByComparator);
 	}
 
+	@Override
 	public List<CalendarBooking> findByC_G_C_C_P_T_D_L_S_E_S(
 			long companyId, long[] groupIds, long[] calendarIds,
 			long[] calendarResourceIds, long parentCalendarBookingId,
@@ -367,10 +381,10 @@ public class CalendarBookingFinderImpl
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "description", StringPool.LIKE, false, descriptions);
 			sql = CustomSQLUtil.replaceKeywords(
-				sql, "lower(location)", StringPool.LIKE, false, locations);
+				sql, "lower(location)", StringPool.LIKE, true, locations);
 			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
@@ -379,13 +393,11 @@ public class CalendarBookingFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((calendarIds != null) && (calendarIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(calendarIds)) {
 				qPos.add(calendarIds);
 			}
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -396,15 +408,20 @@ public class CalendarBookingFinderImpl
 			qPos.add(titles, 2);
 			qPos.add(descriptions, 2);
 			qPos.add(locations, 2);
+			qPos.add(startTime);
+			qPos.add(endTime);
+			qPos.add(startTime);
+			qPos.add(endTime);
+			qPos.add(startTime);
+			qPos.add(endTime);
+			qPos.add(endTime);
+			qPos.add(startTime);
+			qPos.add(startTime);
+			qPos.add(endTime);
 
-			if ((statuses != null) && (statuses.length > 0)) {
+			if (ArrayUtil.isNotEmpty(statuses)) {
 				qPos.add(statuses);
 			}
-
-			qPos.add(startTime);
-			qPos.add(startTime);
-			qPos.add(endTime);
-			qPos.add(endTime);
 
 			Iterator<Long> itr = q.iterate();
 
@@ -460,8 +477,7 @@ public class CalendarBookingFinderImpl
 				sql, "[$CALENDAR_RESOURCE_ID$]",
 				getCalendarResourceIds(calendarResourceIds));
 			sql = StringUtil.replace(
-				sql, "[$DATE_RANGE$]",
-				getDateRange(startTime, endTime, recurring));
+				sql, "[$RECURRENCE$]", getRecurrence(recurring));
 			sql = StringUtil.replace(sql, "[$STATUS$]", getStatuses(statuses));
 
 			if (parentCalendarBookingId < 0) {
@@ -474,7 +490,7 @@ public class CalendarBookingFinderImpl
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "description", StringPool.LIKE, false, descriptions);
 			sql = CustomSQLUtil.replaceKeywords(
-				sql, "lower(location)", StringPool.LIKE, false, locations);
+				sql, "lower(location)", StringPool.LIKE, true, locations);
 			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
 			StringBundler sb = new StringBundler();
@@ -486,22 +502,23 @@ public class CalendarBookingFinderImpl
 
 			sql = StringUtil.replace(sql, "[$ORDER_BY$]", sb.toString());
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("CalendarBooking", CalendarBookingImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
 			qPos.add(companyId);
-			qPos.add(groupIds);
 
-			if ((calendarIds != null) && (calendarIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(groupIds)) {
+				qPos.add(groupIds);
+			}
+
+			if (ArrayUtil.isNotEmpty(calendarIds)) {
 				qPos.add(calendarIds);
 			}
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -513,16 +530,17 @@ public class CalendarBookingFinderImpl
 			qPos.add(descriptions, 2);
 			qPos.add(locations, 2);
 			qPos.add(startTime);
+			qPos.add(endTime);
+			qPos.add(startTime);
+			qPos.add(endTime);
 			qPos.add(startTime);
 			qPos.add(endTime);
 			qPos.add(endTime);
+			qPos.add(startTime);
+			qPos.add(startTime);
+			qPos.add(endTime);
 
-			if (recurring) {
-				qPos.add(endTime);
-				qPos.add(endTime);
-			}
-
-			if ((statuses != null) && (statuses.length > 0)) {
+			if (ArrayUtil.isNotEmpty(statuses)) {
 				qPos.add(statuses);
 			}
 
@@ -538,7 +556,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getCalendarIds(long[] calendarIds) {
-		if ((calendarIds == null) || (calendarIds.length == 0)) {
+		if (ArrayUtil.isEmpty(calendarIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -560,9 +578,7 @@ public class CalendarBookingFinderImpl
 	}
 
 	protected String getCalendarResourceIds(long[] calendarResourceIds) {
-		if ((calendarResourceIds == null) ||
-				(calendarResourceIds.length == 0)) {
-
+		if (ArrayUtil.isEmpty(calendarResourceIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -584,28 +600,8 @@ public class CalendarBookingFinderImpl
 		return sb.toString();
 	}
 
-	protected String getDateRange(
-		long startTime, long endTime, boolean recurring) {
-
-		StringBundler sb = new StringBundler(7);
-
-		sb.append("(((startTime >= ? OR ? = -1) AND ");
-		sb.append("(endTime <= ? OR ? = -1) AND ");
-		sb.append("(recurrence IS NULL OR recurrence = '')) ");
-
-		if (recurring) {
-			sb.append(" OR (");
-			sb.append("(endTime <= ? OR ? = -1) AND ");
-			sb.append("(recurrence IS NOT NULL AND recurrence != ''))");
-		}
-
-		sb.append(")");
-
-		return sb.toString();
-	}
-
 	protected String getGroupIds(long[] groupIds) {
-		if (groupIds.length == 0) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return StringPool.BLANK;
 		}
 
@@ -626,14 +622,22 @@ public class CalendarBookingFinderImpl
 		return sb.toString();
 	}
 
+	protected String getRecurrence(boolean recurring) {
+		if (recurring) {
+			return "OR ((recurrence IS NOT NULL AND recurrence != ''))";
+		}
+
+		return StringPool.BLANK;
+	}
+
 	protected String getStatuses(int[] statuses) {
-		if ((statuses == null) || (statuses.length == 0)) {
+		if (ArrayUtil.isEmpty(statuses)) {
 			return StringPool.BLANK;
 		}
 
 		StringBundler sb = new StringBundler(statuses.length * 2 + 1);
 
-		sb.append(" (");
+		sb.append("AND (");
 
 		for (int i = 0; i < statuses.length; i++) {
 			sb.append("status = ? ");

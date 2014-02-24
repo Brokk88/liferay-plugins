@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE project>
 
-<project name="plugins" basedir="." default="all" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:ivy="antlib:org.apache.ivy.ant">
-	<property name="project.dir" value="." />
-
+<project name="plugins" basedir="." default="all" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-common.xml" />
 
 	<target name="all">
@@ -12,6 +10,7 @@
 	</target>
 
 	<target name="build-service">
+		<ant dir="hooks" target="build-service" inheritAll="false" />
 		<ant dir="portlets" target="build-service" inheritAll="false" />
 		<ant dir="webs" target="build-service" inheritAll="false" />
 	</target>
@@ -24,7 +23,7 @@
 			newenvironment="true"
 		>
 			<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
-			<jvmarg value="-Dplugins.dir=${project.dir}" />
+			<jvmarg value="-Dplugins.dir=${sdk.dir}" />
 		</java>
 
 		<java
@@ -34,42 +33,54 @@
 			newenvironment="true"
 		>
 			<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
-			<arg value="${project.dir}/summary.xml" />
-			<arg value="${project.dir}/summary.xsl" />
-			<arg value="${project.dir}/summary.html" />
+			<arg value="${sdk.dir}/summary.xml" />
+			<arg value="${sdk.dir}/summary.xsl" />
+			<arg value="${sdk.dir}/summary.html" />
 		</java>
 	</target>
 
 	<target name="clean">
-		<ant dir="hooks" target="clean" inheritAll="false" />
-		<ant dir="layouttpl" target="clean" inheritAll="false" />
-		<ant dir="portlets" target="clean" inheritAll="false" />
-		<ant dir="themes" target="clean" inheritAll="false" />
-		<ant dir="webs" target="clean" inheritAll="false" />
+		<for list="hooks,layouttpl,portlets,shared,themes,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="clean"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="compile">
-		<ant dir="hooks" target="compile" inheritAll="false" />
-		<ant dir="layouttpl" target="compile" inheritAll="false" />
-		<ant dir="portlets" target="compile" inheritAll="false" />
-		<ant dir="themes" target="compile" inheritAll="false" />
-		<ant dir="webs" target="compile" inheritAll="false" />
+		<for list="hooks,layouttpl,portlets,shared,themes,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="compile"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="deploy">
-		<ant dir="hooks" target="deploy" inheritAll="false" />
-		<ant dir="layouttpl" target="deploy" inheritAll="false" />
-		<ant dir="portlets" target="deploy" inheritAll="false" />
-		<ant dir="themes" target="deploy" inheritAll="false" />
-		<ant dir="webs" target="deploy" inheritAll="false" />
+		<for list="hooks,layouttpl,portlets,shared,themes,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="deploy"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="direct-deploy">
-		<ant dir="hooks" target="direct-deploy" inheritAll="false" />
-		<ant dir="layouttpl" target="direct-deploy" inheritAll="false" />
-		<ant dir="portlets" target="direct-deploy" inheritAll="false" />
-		<ant dir="themes" target="direct-deploy" inheritAll="false" />
-		<ant dir="webs" target="direct-deploy" inheritAll="false" />
+		<for list="hooks,layouttpl,portlets,themes,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="direct-deploy"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="ear">
@@ -78,7 +89,7 @@
 
 		<copy todir="dist" overwrite="yes">
 			<fileset
-				dir="${project.dir}/tools/ear_tmpl"
+				dir="${sdk.dir}/tools/ear_tmpl"
 			/>
 		</copy>
 
@@ -153,6 +164,7 @@
 			<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<arg value="${basedir}/dist/modules/META-INF/application.xml" />
 			<arg value="${ear.modules.converted}" />
+			<arg value="${plugins.ear.portal.context.path}" />
 		</java>
 
 		<ear
@@ -176,12 +188,18 @@
 		<zip destfile="dist/liferay-plugins-sdk-${lp.version}.zip">
 			<zipfileset
 				dir="."
-				excludes="*.iml,.git/**,.ivy/**,build.*.properties,dist/**,ext/*-ext/**,hooks/*-hook/**,ivy.xml.MD5,layouttpl/*-layouttpl/**,portlets/*-portlet/**,private-plugins.txt,shared/*-shared/**,source_formatter_*,summary.*,themes/*-theme/**,webs/*-web/**"
+				excludes="*.iml,.git/**,.ivy/**,build.*.properties,dist/**,ext/*-ext/**,hooks/*-hook/**,lib/**,ivy.xml.MD5,layouttpl/*-layouttpl/**,portlets/*-portlet/**,private-plugins.txt,shared/*-shared/**,source_formatter_*,summary.*,themes/*-theme/**,webs/*-web/**"
 				prefix="liferay-plugins-sdk-${lp.version}"
 			/>
 			<zipfileset
 				dir="."
+				excludes="**/releng/**"
 				includes="webs/resources-importer-web/**"
+				prefix="liferay-plugins-sdk-${lp.version}"
+			/>
+			<zipfileset
+				dir="."
+				includes="lib/ant-contrib.jar,lib/antelopetasks.jar,lib/bcpg-jdk16.jar,lib/bcprov-jdk16.jar"
 				prefix="liferay-plugins-sdk-${lp.version}"
 			/>
 		</zip>
@@ -196,13 +214,23 @@
 	</target>
 
 	<target name="setup-eclipse">
-		<ant dir="hooks" target="clean" inheritAll="false" />
-		<ant dir="portlets" target="clean" inheritAll="false" />
-		<ant dir="webs" target="clean" inheritAll="false" />
+		<for list="hooks,portlets,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="clean"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 
-		<ant dir="hooks" target="compile" inheritAll="false" />
-		<ant dir="portlets" target="compile" inheritAll="false" />
-		<ant dir="webs" target="compile" inheritAll="false" />
+		<for list="hooks,portlets,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="compile"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 
 		<ant dir="hooks" target="setup-eclipse" inheritAll="false" />
 		<ant dir="portlets" target="setup-eclipse" inheritAll="false" />
@@ -210,11 +238,14 @@
 	</target>
 
 	<target name="war">
-		<ant dir="hooks" target="war" inheritAll="false" />
-		<ant dir="layouttpl" target="war" inheritAll="false" />
-		<ant dir="portlets" target="war" inheritAll="false" />
-		<ant dir="themes" target="war" inheritAll="false" />
-		<ant dir="webs" target="war" inheritAll="false" />
+		<for list="hooks,layouttpl,portlets,shared,themes,webs" param="loop.modules.dir">
+			<sequential>
+				<loop-modules
+					loop.modules.cmd="war"
+					loop.modules.dir="@{loop.modules.dir}"
+				/>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="zip-portal">
@@ -251,12 +282,12 @@ the outputted files will work in any supported application server.
 			excludes="html/js/editor/_fckeditor/**,html/js/editor/fckeditor/_samples/**"
 		/>
 
-		<ivy:retrieve
-			conf="ccpp"
-			log="download-only"
-			pattern="${tstamp.value}/WEB-INF/lib/[artifact].[ext]"
-			type="jar"
-		/>
+		<copy todir="${tstamp.value}/WEB-INF/lib">
+			<fileset
+				dir="lib"
+				includes="ccpp.jar"
+			/>
+		</copy>
 
 		<zip
 			basedir="${tstamp.value}"

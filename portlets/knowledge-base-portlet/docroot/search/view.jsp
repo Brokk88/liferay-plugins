@@ -20,19 +20,14 @@
 	<portlet:param name="mvcPath" value="/search/search.jsp" />
 </liferay-portlet:renderURL>
 
-<aui:form action="<%= searchURL %>" method="get" name="searchFm">
-	<liferay-portlet:renderURLParams varImpl="searchURL" />
+<aui:nav-bar>
+	<aui:nav-bar-search cssClass="pull-right">
+		<div class="form-search">
+			<aui:form action="<%= searchURL %>" method="get" name="searchFm">
+				<liferay-portlet:renderURLParams varImpl="searchURL" />
 
-	<aui:fieldset>
-		<table class="lfr-table">
-		<tr>
-			<td width="99%">
-				<aui:input cssClass="kb-search-keywords" label="" name="keywords" title="search-articles" type="text" />
-			</td>
-			<td>
-				<aui:button type="submit" value="search" />
-			</td>
-		</tr>
-		</table>
-	</aui:fieldset>
-</aui:form>
+				<liferay-ui:input-search />
+			</aui:form>
+		</div>
+	</aui:nav-bar-search>
+</aui:nav-bar>

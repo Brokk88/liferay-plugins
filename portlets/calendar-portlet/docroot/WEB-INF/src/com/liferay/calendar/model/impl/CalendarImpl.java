@@ -27,6 +27,7 @@ public class CalendarImpl extends CalendarBaseImpl {
 	public CalendarImpl() {
 	}
 
+	@Override
 	public CalendarResource getCalendarResource()
 		throws PortalException, SystemException {
 

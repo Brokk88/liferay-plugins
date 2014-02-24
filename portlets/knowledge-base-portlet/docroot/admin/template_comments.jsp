@@ -82,22 +82,22 @@ boolean helpful = BeanParamUtil.getBoolean(kbComment, request, "helpful", true);
 
 					<liferay-ui:search-container
 						iteratorURL="<%= iteratorURL %>"
+						total="<%= KBCommentLocalServiceUtil.getKBCommentsCount(KBTemplate.class.getName(), kbTemplate.getKbTemplateId()) %>"
 					>
 						<liferay-ui:search-container-results
 							results="<%= KBCommentLocalServiceUtil.getKBComments(KBTemplate.class.getName(), kbTemplate.getKbTemplateId(), searchContainer.getStart(), searchContainer.getEnd(), null) %>"
-							total="<%= KBCommentLocalServiceUtil.getKBCommentsCount(KBTemplate.class.getName(), kbTemplate.getKbTemplateId()) %>"
 						/>
 
 						<c:if test="<%= total > 0 %>">
 							<div class="separator"><!-- --></div>
 
 							<div class="kb-all-comments">
-								<%= LanguageUtil.format(pageContext, "all-comments-x", total) %>
+								<%= LanguageUtil.format(pageContext, "all-comments-x", total, false) %>
 							</div>
 						</c:if>
 
 						<%
-						for (KBComment curKBComment : (List<KBComment>)results) {
+						for (KBComment curKBComment : (List<KBComment>)searchContainer.getResults()) {
 						%>
 
 							<%

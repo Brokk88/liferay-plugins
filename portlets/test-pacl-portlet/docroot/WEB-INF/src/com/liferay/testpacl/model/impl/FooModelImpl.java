@@ -97,26 +97,32 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	public FooModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setFooId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Foo.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Foo.class.getName();
 	}
@@ -137,6 +143,9 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		attributes.put("field3", getField3());
 		attributes.put("field4", getField4());
 		attributes.put("field5", getField5());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -216,46 +225,57 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public long getFooId() {
 		return _fooId;
 	}
 
+	@Override
 	public void setFooId(long fooId) {
 		_fooId = fooId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -265,26 +285,32 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getField1() {
 		if (_field1 == null) {
 			return StringPool.BLANK;
@@ -294,20 +320,24 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setField1(String field1) {
 		_columnBitmask = -1L;
 
 		_field1 = field1;
 	}
 
+	@Override
 	public boolean getField2() {
 		return _field2;
 	}
 
+	@Override
 	public boolean isField2() {
 		return _field2;
 	}
 
+	@Override
 	public void setField2(boolean field2) {
 		_columnBitmask |= FIELD2_COLUMN_BITMASK;
 
@@ -324,22 +354,27 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return _originalField2;
 	}
 
+	@Override
 	public int getField3() {
 		return _field3;
 	}
 
+	@Override
 	public void setField3(int field3) {
 		_field3 = field3;
 	}
 
+	@Override
 	public Date getField4() {
 		return _field4;
 	}
 
+	@Override
 	public void setField4(Date field4) {
 		_field4 = field4;
 	}
 
+	@Override
 	public String getField5() {
 		if (_field5 == null) {
 			return StringPool.BLANK;
@@ -349,6 +384,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setField5(String field5) {
 		_field5 = field5;
 	}
@@ -402,6 +438,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return fooImpl;
 	}
 
+	@Override
 	public int compareTo(Foo foo) {
 		int value = 0;
 
@@ -416,18 +453,15 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Foo)) {
 			return false;
 		}
 
-		Foo foo = null;
-
-		try {
-			foo = (Foo)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Foo foo = (Foo)obj;
 
 		long primaryKey = foo.getPrimaryKey();
 
@@ -442,6 +476,16 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -558,6 +602,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 

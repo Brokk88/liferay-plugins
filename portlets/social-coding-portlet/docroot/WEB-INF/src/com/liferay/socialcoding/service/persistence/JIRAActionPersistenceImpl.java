@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -49,6 +50,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the j i r a action service.
@@ -112,6 +114,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraUserId(String jiraUserId)
 		throws SystemException {
 		return findByJiraUserId(jiraUserId, QueryUtil.ALL_POS,
@@ -131,6 +134,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
 		int end) throws SystemException {
 		return findByJiraUserId(jiraUserId, start, end, null);
@@ -150,6 +154,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the ordered range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -270,6 +275,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByJiraUserId_First(String jiraUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -300,6 +306,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByJiraUserId_First(String jiraUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<JIRAAction> list = findByJiraUserId(jiraUserId, 0, 1,
@@ -321,6 +328,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByJiraUserId_Last(String jiraUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -351,9 +359,14 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByJiraUserId_Last(String jiraUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByJiraUserId(jiraUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAAction> list = findByJiraUserId(jiraUserId, count - 1, count,
 				orderByComparator);
@@ -375,6 +388,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction[] findByJiraUserId_PrevAndNext(long jiraActionId,
 		String jiraUserId, OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -530,6 +544,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @param jiraUserId the jira user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByJiraUserId(String jiraUserId) throws SystemException {
 		for (JIRAAction jiraAction : findByJiraUserId(jiraUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -544,6 +559,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the number of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByJiraUserId(String jiraUserId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAUSERID;
 
@@ -635,6 +651,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraIssueId(long jiraIssueId)
 		throws SystemException {
 		return findByJiraIssueId(jiraIssueId, QueryUtil.ALL_POS,
@@ -654,6 +671,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
 		int end) throws SystemException {
 		return findByJiraIssueId(jiraIssueId, start, end, null);
@@ -673,6 +691,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the ordered range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -779,6 +798,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByJiraIssueId_First(long jiraIssueId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -809,6 +829,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByJiraIssueId_First(long jiraIssueId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, 0, 1,
@@ -830,6 +851,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByJiraIssueId_Last(long jiraIssueId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -860,9 +882,14 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByJiraIssueId_Last(long jiraIssueId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByJiraIssueId(jiraIssueId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, count - 1,
 				count, orderByComparator);
@@ -884,6 +911,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction[] findByJiraIssueId_PrevAndNext(long jiraActionId,
 		long jiraIssueId, OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -1025,6 +1053,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @param jiraIssueId the jira issue ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByJiraIssueId(long jiraIssueId) throws SystemException {
 		for (JIRAAction jiraAction : findByJiraIssueId(jiraIssueId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -1039,6 +1068,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the number of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByJiraIssueId(long jiraIssueId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAISSUEID;
 
@@ -1112,6 +1142,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByType(String type) throws SystemException {
 		return findByType(type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1129,6 +1160,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByType(String type, int start, int end)
 		throws SystemException {
 		return findByType(type, start, end, null);
@@ -1148,6 +1180,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the ordered range of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findByType(String type, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1268,6 +1301,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByType_First(String type,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -1297,6 +1331,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByType_First(String type,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<JIRAAction> list = findByType(type, 0, 1, orderByComparator);
@@ -1317,6 +1352,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByType_Last(String type,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -1346,9 +1382,14 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByType_Last(String type,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByType(type);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAAction> list = findByType(type, count - 1, count,
 				orderByComparator);
@@ -1370,6 +1411,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction[] findByType_PrevAndNext(long jiraActionId, String type,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAActionException, SystemException {
@@ -1525,6 +1567,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @param type the type
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByType(String type) throws SystemException {
 		for (JIRAAction jiraAction : findByType(type, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1539,6 +1582,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the number of matching j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByType(String type) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_TYPE;
 
@@ -1602,11 +1646,16 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	private static final String _FINDER_COLUMN_TYPE_TYPE_2 = "jiraAction.type = ?";
 	private static final String _FINDER_COLUMN_TYPE_TYPE_3 = "(jiraAction.type IS NULL OR jiraAction.type = '')";
 
+	public JIRAActionPersistenceImpl() {
+		setModelClass(JIRAAction.class);
+	}
+
 	/**
 	 * Caches the j i r a action in the entity cache if it is enabled.
 	 *
 	 * @param jiraAction the j i r a action
 	 */
+	@Override
 	public void cacheResult(JIRAAction jiraAction) {
 		EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAActionImpl.class, jiraAction.getPrimaryKey(), jiraAction);
@@ -1619,6 +1668,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 *
 	 * @param jiraActions the j i r a actions
 	 */
+	@Override
 	public void cacheResult(List<JIRAAction> jiraActions) {
 		for (JIRAAction jiraAction : jiraActions) {
 			if (EntityCacheUtil.getResult(
@@ -1645,7 +1695,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 			CacheRegistryUtil.clear(JIRAActionImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(JIRAActionImpl.class.getName());
+		EntityCacheUtil.clearCache(JIRAActionImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -1685,6 +1735,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @param jiraActionId the primary key for the new j i r a action
 	 * @return the new j i r a action
 	 */
+	@Override
 	public JIRAAction create(long jiraActionId) {
 		JIRAAction jiraAction = new JIRAActionImpl();
 
@@ -1702,6 +1753,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction remove(long jiraActionId)
 		throws NoSuchJIRAActionException, SystemException {
 		return remove((Serializable)jiraActionId);
@@ -1876,7 +1928,9 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 		}
 
 		EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionImpl.class, jiraAction.getPrimaryKey(), jiraAction);
+			JIRAActionImpl.class, jiraAction.getPrimaryKey(), jiraAction, false);
+
+		jiraAction.resetOriginalValues();
 
 		return jiraAction;
 	}
@@ -1936,6 +1990,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByPrimaryKey(long jiraActionId)
 		throws NoSuchJIRAActionException, SystemException {
 		return findByPrimaryKey((Serializable)jiraActionId);
@@ -1996,6 +2051,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the j i r a action, or <code>null</code> if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByPrimaryKey(long jiraActionId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)jiraActionId);
@@ -2007,6 +2063,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2023,6 +2080,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the range of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -2041,6 +2099,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the ordered range of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2126,6 +2185,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (JIRAAction jiraAction : findAll()) {
 			remove(jiraAction);
@@ -2138,6 +2198,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the number of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2167,6 +2228,11 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -2211,6 +2277,10 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(JIRAActionPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"jiraActionId", "jiraUserId", "createDate", "modifiedDate",
+				"jiraIssueId", "type", "body", "jiraGroupName"
+			});
 	private static JIRAAction _nullJIRAAction = new JIRAActionImpl() {
 			@Override
 			public Object clone() {
@@ -2224,6 +2294,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 		};
 
 	private static CacheModel<JIRAAction> _nullJIRAActionCacheModel = new CacheModel<JIRAAction>() {
+			@Override
 			public JIRAAction toEntityModel() {
 				return _nullJIRAAction;
 			}

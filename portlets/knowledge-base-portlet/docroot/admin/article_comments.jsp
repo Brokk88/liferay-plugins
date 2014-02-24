@@ -44,7 +44,7 @@ boolean helpful = BeanParamUtil.getBoolean(kbComment, request, "helpful", true);
 
 			<liferay-ui:error exception="<%= KBCommentContentException.class %>" message="please-enter-valid-content" />
 
-			<aui:model-context bean="<%= kbComment %>" model="<%= KBComment.class %>" />
+			<aui:model-context model="<%= KBComment.class %>" />
 
 			<aui:fieldset>
 				<c:if test="<%= enableKBArticleKBComments && themeDisplay.isSignedIn() %>">
@@ -85,17 +85,17 @@ boolean helpful = BeanParamUtil.getBoolean(kbComment, request, "helpful", true);
 
 					<liferay-ui:search-container
 						iteratorURL="<%= iteratorURL %>"
+						total="<%= KBCommentLocalServiceUtil.getKBCommentsCount(KBArticle.class.getName(), kbArticle.getResourcePrimKey()) %>"
 					>
 						<liferay-ui:search-container-results
 							results="<%= KBCommentLocalServiceUtil.getKBComments(KBArticle.class.getName(), kbArticle.getResourcePrimKey(), searchContainer.getStart(), searchContainer.getEnd(), null) %>"
-							total="<%= KBCommentLocalServiceUtil.getKBCommentsCount(KBArticle.class.getName(), kbArticle.getResourcePrimKey()) %>"
 						/>
 
 						<c:if test="<%= total > 0 %>">
 							<div class="separator"><!-- --></div>
 
 							<div class="kb-all-comments">
-								<%= LanguageUtil.format(pageContext, "all-comments-x", total) %>
+								<%= LanguageUtil.format(pageContext, "all-comments-x", total, false) %>
 							</div>
 						</c:if>
 

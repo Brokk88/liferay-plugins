@@ -28,9 +28,11 @@ import javax.servlet.ServletResponse;
  */
 public class FailureFilter implements Filter {
 
+	@Override
 	public void destroy() {
 	}
 
+	@Override
 	public void doFilter(
 			ServletRequest servletRequest, ServletResponse servletResponse,
 			FilterChain filterChain)
@@ -43,7 +45,8 @@ public class FailureFilter implements Filter {
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
 
-	public void init(FilterConfig filterConfig) throws ServletException {
+	@Override
+	public void init(FilterConfig filterConfig) {
 	}
 
 }

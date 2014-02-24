@@ -18,6 +18,8 @@
 package com.liferay.so.util;
 
 import com.liferay.portal.kernel.configuration.Filter;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -135,6 +137,9 @@ public class LayoutUtil {
 			if (portletId.startsWith("1_WAR_eventsdisplayportlet")) {
 				updatePortletTitle(layout, portletId, "Events");
 			}
+			else if (portletId.startsWith("1_WAR_soannouncementsportlet")) {
+				updatePortletTitle(layout, portletId, "Announcements");
+			}
 			else if (portletId.startsWith("1_WAR_wysiwygportlet")) {
 				updatePortletTitle(layout, portletId, "Welcome");
 			}
@@ -157,10 +162,10 @@ public class LayoutUtil {
 				configureMessageBoards(layout);
 				removePortletBorder(layout, portletId);
 			}
-			else if (portletId.equals(PortletKeys.CALENDAR) ||
-					 portletId.equals(PortletKeys.DOCUMENT_LIBRARY) ||
+			else if (portletId.equals(PortletKeys.DOCUMENT_LIBRARY) ||
 					 portletId.equals(PortletKeys.BLOGS) ||
 					 portletId.equals(PortletKeys.WIKI) ||
+					 portletId.equals("1_WAR_calendarportlet") ||
 					 portletId.contains("_WAR_microblogsportlet") ||
 					 portletId.equals("1_WAR_privatemessagingportlet") ||
 					 portletId.contains("1_WAR_tasksportlet")) {
@@ -171,7 +176,7 @@ public class LayoutUtil {
 	}
 
 	public static void addResources(Layout layout, String portletId)
-		throws Exception {
+		throws PortalException, SystemException {
 
 		String rootPortletId = PortletConstants.getRootPortletId(portletId);
 

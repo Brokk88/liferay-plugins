@@ -20,16 +20,16 @@
 String tabs2 = ParamUtil.getString(request, "tabs2", "general");
 String tabs3 = ParamUtil.getString(request, "tabs3", "article");
 
-String emailFromName = ParamUtil.getString(request, "emailFromName", AdminUtil.getEmailFromName(preferences, company.getCompanyId()));
-String emailFromAddress = ParamUtil.getString(request, "emailFromAddress", AdminUtil.getEmailFromAddress(preferences, company.getCompanyId()));
+String emailFromName = ParamUtil.getString(request, "emailFromName", AdminUtil.getEmailFromName(portletPreferences, company.getCompanyId()));
+String emailFromAddress = ParamUtil.getString(request, "emailFromAddress", AdminUtil.getEmailFromAddress(portletPreferences, company.getCompanyId()));
 
-boolean emailKBArticleAddedEnabled = ParamUtil.getBoolean(request, "emailKBArticleAddedEnabled", AdminUtil.getEmailKBArticleAddedEnabled(preferences));
-String emailKBArticleAddedSubject = ParamUtil.getString(request, "emailKBArticleAddedSubject", AdminUtil.getEmailKBArticleAddedSubject(preferences));
-String emailKBArticleAddedBody = ParamUtil.getString(request, "emailKBArticleAddedBody", AdminUtil.getEmailKBArticleAddedBody(preferences));
+boolean emailKBArticleAddedEnabled = ParamUtil.getBoolean(request, "emailKBArticleAddedEnabled", AdminUtil.getEmailKBArticleAddedEnabled(portletPreferences));
+String emailKBArticleAddedSubject = ParamUtil.getString(request, "emailKBArticleAddedSubject", AdminUtil.getEmailKBArticleAddedSubject(portletPreferences));
+String emailKBArticleAddedBody = ParamUtil.getString(request, "emailKBArticleAddedBody", AdminUtil.getEmailKBArticleAddedBody(portletPreferences));
 
-boolean emailKBArticleUpdatedEnabled = ParamUtil.getBoolean(request, "emailKBArticleUpdatedEnabled", AdminUtil.getEmailKBArticleUpdatedEnabled(preferences));
-String emailKBArticleUpdatedSubject = ParamUtil.getString(request, "emailKBArticleUpdatedSubject", AdminUtil.getEmailKBArticleUpdatedSubject(preferences));
-String emailKBArticleUpdatedBody = ParamUtil.getString(request, "emailKBArticleUpdatedBody", AdminUtil.getEmailKBArticleUpdatedBody(preferences));
+boolean emailKBArticleUpdatedEnabled = ParamUtil.getBoolean(request, "emailKBArticleUpdatedEnabled", AdminUtil.getEmailKBArticleUpdatedEnabled(portletPreferences));
+String emailKBArticleUpdatedSubject = ParamUtil.getString(request, "emailKBArticleUpdatedSubject", AdminUtil.getEmailKBArticleUpdatedSubject(portletPreferences));
+String emailKBArticleUpdatedBody = ParamUtil.getString(request, "emailKBArticleUpdatedBody", AdminUtil.getEmailKBArticleUpdatedBody(portletPreferences));
 
 String editorParam = StringPool.BLANK;
 String editorBody = StringPool.BLANK;
@@ -44,7 +44,9 @@ else if (tabs2.equals("article-updated-email")) {
 }
 %>
 
-<liferay-portlet:renderURL portletConfiguration="true" var="portletURL">
+<liferay-portlet:actionURL portletConfiguration="true" var="configurationActionURL" />
+
+<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
 	<portlet:param name="tabs2" value="<%= tabs2 %>" />
 	<portlet:param name="tabs3" value="<%= tabs3 %>" />
 </liferay-portlet:renderURL>
@@ -52,12 +54,10 @@ else if (tabs2.equals("article-updated-email")) {
 <liferay-ui:tabs
 	names="general,email-from,article-added-email,article-updated-email,display-settings"
 	param="tabs2"
-	url="<%= portletURL %>"
+	url="<%= configurationRenderURL %>"
 />
 
-<liferay-portlet:actionURL portletConfiguration="true" var="configurationURL" />
-
-<aui:form action="<%= configurationURL %>" method="post" name="fm">
+<aui:form action="<%= configurationActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="tabs2" type="hidden" value="<%= tabs2 %>" />
 	<aui:input name="tabs3" type="hidden" value="<%= tabs3 %>" />
@@ -74,19 +74,19 @@ else if (tabs2.equals("article-updated-email")) {
 			<c:when test='<%= tabs2.equals("general") %>'>
 				<div class="kb-field-wrapper">
 					<aui:field-wrapper label="order-by">
-						<aui:select inlineField="<%= true %>" label="" name="preferences--kbArticlesOrderByCol--">
-							<aui:option label="author" selected='<%= kbArticlesOrderByCol.equals("user-name") %>' value="user-name" />
-							<aui:option label="create-date" selected='<%= kbArticlesOrderByCol.equals("create-date") %>' />
-							<aui:option label="modified-date" selected='<%= kbArticlesOrderByCol.equals("modified-date") %>' />
-							<aui:option label="priority" selected='<%= kbArticlesOrderByCol.equals("priority") %>' />
-							<aui:option label="status" selected='<%= kbArticlesOrderByCol.equals("status") %>' />
-							<aui:option label="title" selected='<%= kbArticlesOrderByCol.equals("title") %>' />
-							<aui:option label="view-count" selected='<%= kbArticlesOrderByCol.equals("view-count") %>' />
+						<aui:select inlineField="<%= true %>" label="" name="preferences--kbArticlesOrderByCol--" value="<%= kbArticlesOrderByCol %>">
+							<aui:option label="author" value="user-name" />
+							<aui:option label="create-date" />
+							<aui:option label="modified-date" />
+							<aui:option label="priority" />
+							<aui:option label="status" />
+							<aui:option label="title" />
+							<aui:option label="view-count" />
 						</aui:select>
 
-						<aui:select inlineField="<%= true %>" label="" name="preferences--kbArticlesOrderByType--">
-							<aui:option label="ascending" selected='<%= kbArticlesOrderByType.equals("asc") %>' value="asc" />
-							<aui:option label="descending" selected='<%= kbArticlesOrderByType.equals("desc") %>' value="desc" />
+						<aui:select inlineField="<%= true %>" label="" name="preferences--kbArticlesOrderByType--" value="<%= kbArticlesOrderByType %>">
+							<aui:option label="ascending" value="asc" />
+							<aui:option label="descending" value="desc" />
 						</aui:select>
 					</aui:field-wrapper>
 				</div>
@@ -291,7 +291,7 @@ else if (tabs2.equals("article-updated-email")) {
 				<liferay-ui:tabs
 					names="article,template"
 					param="tabs3"
-					url="<%= portletURL %>"
+					url="<%= configurationRenderURL %>"
 				/>
 
 				<c:choose>

@@ -37,9 +37,9 @@ List<Calendar> otherCalendars = new ArrayList<Calendar>();
 long[] calendarIds = StringUtil.split(SessionClicks.get(request, "otherCalendars", StringPool.BLANK), 0L);
 
 for (long calendarId : calendarIds) {
-	Calendar calendar = CalendarLocalServiceUtil.fetchCalendar(calendarId);
+	Calendar calendar = CalendarServiceUtil.fetchCalendar(calendarId);
 
-	if ((calendar != null) && (CalendarPermission.contains(permissionChecker, calendar, ActionKeys.VIEW))) {
+	if (calendar != null) {
 		CalendarResource calendarResource = calendar.getCalendarResource();
 
 		if (calendarResource.isActive()) {
@@ -50,83 +50,127 @@ for (long calendarId : calendarIds) {
 
 Calendar defaultCalendar = null;
 
-if ((userCalendars != null) && (userCalendars.size() > 0)) {
-	defaultCalendar = userCalendars.get(0);
+List<Calendar> defaultCalendars = Collections.emptyList();
+
+if ((groupCalendars != null) && (groupCalendars.size() > 0)) {
+	defaultCalendars = groupCalendars;
+}
+else if (userCalendars != null) {
+	defaultCalendars = userCalendars;
+}
+
+for (Calendar calendar : defaultCalendars) {
+	if (calendar.isDefaultCalendar()) {
+		defaultCalendar = calendar;
+
+		break;
+	}
 }
 
 JSONArray groupCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDisplay, groupCalendars);
 JSONArray userCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDisplay, userCalendars);
 JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDisplay, otherCalendars);
+
+boolean columnOptionsVisible = GetterUtil.getBoolean(SessionClicks.get(request, "calendar-portlet-column-options-visible", "true"));
 %>
 
-<aui:fieldset cssClass="calendar-portlet-column-parent">
-	<aui:column cssClass="calendar-portlet-column-options">
-		<div class="calendar-portlet-mini-calendar" id="<portlet:namespace />miniCalendarContainer"></div>
+<aui:container cssClass="calendar-portlet-column-parent">
+	<aui:row>
+		<aui:col cssClass='<%= "calendar-portlet-column-options " + (columnOptionsVisible ? StringPool.BLANK : "hide") %>' id="columnOptions" span="<%= 3 %>">
+			<div class="calendar-portlet-mini-calendar" id="<portlet:namespace />miniCalendarContainer"></div>
 
-		<div id="<portlet:namespace />calendarListContainer">
-			<a class="aui-toggler-header-expanded calendar-portlet-list-header" href="javascript:void(0);">
-				<span class="calendar-portlet-list-arrow"></span>
+			<div id="<portlet:namespace />calendarListContainer">
+				<c:if test="<%= themeDisplay.isSignedIn() %>">
+					<div class="toggler-header-expanded calendar-portlet-list-header">
+						<span class="calendar-portlet-list-arrow"></span>
 
-				<span class="calendar-portlet-list-text"><liferay-ui:message key="my-calendars" /></span>
+						<span class="calendar-portlet-list-text"><liferay-ui:message key="my-calendars" /></span>
 
-				<c:if test="<%= userCalendarResource != null %>">
-					<span class="aui-calendar-list-item-arrow" data-calendarResourceId="<%= userCalendarResource.getCalendarResourceId() %>" tabindex="0"></span>
+						<c:if test="<%= userCalendarResource != null %>">
+							<span class="calendar-list-item-arrow" data-calendarResourceId="<%= userCalendarResource.getCalendarResourceId() %>" tabindex="0"><i class="icon-caret-down"></i></span>
+						</c:if>
+					</div>
+
+					<div class="calendar-portlet-calendar-list" id="<portlet:namespace />myCalendarList"></div>
 				</c:if>
-			</a>
 
-			<div class="calendar-portlet-calendar-list" id="<portlet:namespace />myCalendarList"></div>
+				<c:if test="<%= groupCalendarResource != null %>">
+					<div class="toggler-header-expanded calendar-portlet-list-header">
+						<span class="calendar-portlet-list-arrow"></span>
 
-			<a class="calendar-portlet-list-header aui-toggler-header-expanded" href="javascript:void(0);">
-				<span class="calendar-portlet-list-arrow"></span>
+						<span class="calendar-portlet-list-text"><liferay-ui:message key="current-site-calendars" /></span>
 
-				<span class="calendar-portlet-list-text"><liferay-ui:message key="other-calendars" /></span>
-			</a>
+						<c:if test="<%= CalendarResourcePermission.contains(permissionChecker, groupCalendarResource, ActionKeys.ADD_CALENDAR) %>">
+							<span class="calendar-list-item-arrow" data-calendarResourceId="<%= groupCalendarResource.getCalendarResourceId() %>" tabindex="0"><i class="icon-caret-down"></i></span>
+						</c:if>
+					</div>
 
-			<div class="calendar-portlet-calendar-list" id="<portlet:namespace />otherCalendarList">
-				<input class="calendar-portlet-add-calendars-input" id="<portlet:namespace />addOtherCalendar" placeholder="<liferay-ui:message key="add-other-calendars" />" type="text" />
+					<div class="calendar-portlet-calendar-list" id="<portlet:namespace />siteCalendarList"></div>
+				</c:if>
+
+				<c:if test="<%= themeDisplay.isSignedIn() %>">
+					<div class="calendar-portlet-list-header toggler-header-expanded">
+						<span class="calendar-portlet-list-arrow"></span>
+
+						<span class="calendar-portlet-list-text"><liferay-ui:message key="other-calendars" /></span>
+					</div>
+
+					<div class="calendar-portlet-calendar-list" id="<portlet:namespace />otherCalendarList">
+						<input class="calendar-portlet-add-calendars-input" id="<portlet:namespace />addOtherCalendar" placeholder="<liferay-ui:message key="add-other-calendars" />" type="text" />
+					</div>
+				</c:if>
 			</div>
 
-			<c:if test="<%= groupCalendarResource != null %>">
-				<a class="aui-toggler-header-expanded calendar-portlet-list-header" href="javascript:void(0);">
-					<span class="calendar-portlet-list-arrow"></span>
+			<div id="<portlet:namespace />message"></div>
+		</aui:col>
 
-					<span class="calendar-portlet-list-text"><liferay-ui:message key="current-site-calendars" /></span>
+		<aui:col cssClass="calendar-portlet-column-grid" id="columnGrid" span="<%= columnOptionsVisible ? 9 : 12 %>">
+			<div class="calendar-portlet-column-toggler" id="<portlet:namespace />columnToggler">
+				<i class="<%= columnOptionsVisible ? "icon-caret-left" : "icon-caret-right" %>" id="<portlet:namespace />columnTogglerIcon"></i>
+			</div>
 
-					<c:if test="<%= CalendarResourcePermission.contains(permissionChecker, groupCalendarResource, ActionKeys.VIEW) %>">
-						<span class="aui-calendar-list-item-arrow" data-calendarResourceId="<%= groupCalendarResource.getCalendarResourceId() %>" tabindex="0"></span>
-					</c:if>
-				</a>
+			<liferay-util:include page="/scheduler.jsp" servletContext="<%= application %>">
+				<liferay-util:param name="activeView" value="<%= activeView %>" />
+				<liferay-util:param name="date" value="<%= String.valueOf(date) %>" />
 
-				<div class="calendar-portlet-calendar-list" id="<portlet:namespace />siteCalendarList"></div>
-			</c:if>
-		</div>
+				<portlet:renderURL var="editCalendarBookingURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+					<portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
+					<portlet:param name="activeView" value="{activeView}" />
+					<portlet:param name="allDay" value="{allDay}" />
+					<portlet:param name="calendarBookingId" value="{calendarBookingId}" />
+					<portlet:param name="calendarId" value="{calendarId}" />
+					<portlet:param name="date" value="{date}" />
+					<portlet:param name="endTime" value="{endTime}" />
+					<portlet:param name="startTime" value="{startTime}" />
+					<portlet:param name="titleCurrentValue" value="{titleCurrentValue}" />
+				</portlet:renderURL>
 
-		<div id="<portlet:namespace />message"></div>
-	</aui:column>
+				<liferay-util:param name="editCalendarBookingURL" value="<%= editCalendarBookingURL %>" />
 
-	<aui:column columnWidth="100">
-		<liferay-util:include page="/scheduler.jsp" servletContext="<%= application %>">
-			<liferay-util:param name="activeView" value="<%= activeView %>" />
-			<liferay-util:param name="date" value="<%= String.valueOf(date) %>" />
+				<liferay-util:param name="readOnly" value="<%= String.valueOf(false) %>" />
 
-			<portlet:renderURL var="editCalendarBookingURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
-				<portlet:param name="activeView" value="{activeView}" />
-				<portlet:param name="allDay" value="{allDay}" />
-				<portlet:param name="calendarBookingId" value="{calendarBookingId}" />
-				<portlet:param name="calendarId" value="{calendarId}" />
-				<portlet:param name="date" value="{date}" />
-				<portlet:param name="endTime" value="{endTime}" />
-				<portlet:param name="startTime" value="{startTime}" />
-				<portlet:param name="titleCurrentValue" value="{titleCurrentValue}" />
-			</portlet:renderURL>
+				<liferay-security:permissionsURL
+					modelResource="<%= CalendarBooking.class.getName() %>"
+					modelResourceDescription="{modelResourceDescription}"
+					resourceGroupId="{resourceGroupId}"
+					resourcePrimKey="{resourcePrimKey}"
+					var="permissionsCalendarBookingURL"
+					windowState="<%= LiferayWindowState.POP_UP.toString() %>"
+				/>
 
-			<liferay-util:param name="editCalendarBookingURL" value="<%= editCalendarBookingURL %>" />
+				<liferay-util:param name="permissionsCalendarBookingURL" value="<%= permissionsCalendarBookingURL %>" />
 
-			<liferay-util:param name="readOnly" value="<%= String.valueOf(false) %>" />
-		</liferay-util:include>
-	</aui:column>
-</aui:fieldset>
+				<portlet:renderURL var="viewCalendarBookingURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+					<portlet:param name="mvcPath" value="/view_calendar_booking.jsp" />
+					<portlet:param name="calendarBookingId" value="{calendarBookingId}" />
+				</portlet:renderURL>
+
+				<liferay-util:param name="showAddEventBtn" value="<%= String.valueOf((userDefaultCalendar != null) && CalendarPermission.contains(permissionChecker, userDefaultCalendar, ActionKeys.MANAGE_BOOKINGS)) %>" />
+				<liferay-util:param name="viewCalendarBookingURL" value="<%= viewCalendarBookingURL %>" />
+			</liferay-util:include>
+		</aui:col>
+	</aui:row>
+</aui:container>
 
 <%@ include file="/view_calendar_menus.jspf" %>
 
@@ -141,86 +185,103 @@ JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDispl
 	</c:if>
 
 	var syncCalendarsMap = function() {
-		Liferay.CalendarUtil.syncCalendarsMap(
-			window.<portlet:namespace />myCalendarList,
-			window.<portlet:namespace />otherCalendarList,
-			window.<portlet:namespace />siteCalendarList
-		);
+		var calendarLists = [];
+
+		<c:if test="<%= themeDisplay.isSignedIn() || (groupCalendarResource != null) %>">
+			calendarLists.push(window.<portlet:namespace />myCalendarList);
+		</c:if>
+
+		<c:if test="<%= themeDisplay.isSignedIn() %>">
+			calendarLists.push(window.<portlet:namespace />otherCalendarList);
+		</c:if>
+
+		<c:if test="<%= groupCalendarResource != null %>">
+			calendarLists.push(window.<portlet:namespace />siteCalendarList);
+		</c:if>
+
+		Liferay.CalendarUtil.syncCalendarsMap(calendarLists);
 	}
 
-	window.<portlet:namespace />myCalendarList = new Liferay.CalendarList(
-		{
-			after: {
-				calendarsChange: syncCalendarsMap,
-				'scheduler-calendar:visibleChange': function(event) {
-					syncCalendarsMap();
+	<c:if test="<%= themeDisplay.isSignedIn() || (groupCalendarResource != null) %>">
+		window.<portlet:namespace />myCalendarList = new Liferay.CalendarList(
+			{
+				after: {
+					calendarsChange: syncCalendarsMap,
+					'scheduler-calendar:visibleChange': function(event) {
+						syncCalendarsMap();
 
-					<portlet:namespace />refreshVisibleCalendarRenderingRules();
-				}
-			},
-			boundingBox: '#<portlet:namespace />myCalendarList',
-
-			<%
-			updateCalendarsJSONArray(request, userCalendarsJSONArray);
-			%>
-
-			calendars: <%= userCalendarsJSONArray %>,
-			scheduler: <portlet:namespace />scheduler,
-			simpleMenu: window.<portlet:namespace />calendarsMenu
-		}
-	).render();
-
-	window.<portlet:namespace />otherCalendarList = new Liferay.CalendarList(
-		{
-			after: {
-				calendarsChange: function(event) {
-					syncCalendarsMap();
-
-					<portlet:namespace />scheduler.load();
-
-					var calendarIds = A.Array.invoke(event.newVal, 'get', 'calendarId');
-
-					Liferay.Store('otherCalendars', calendarIds.join());
+						<portlet:namespace />refreshVisibleCalendarRenderingRules();
+					}
 				},
-				'scheduler-calendar:visibleChange': function(event) {
-					syncCalendarsMap();
+				boundingBox: '#<portlet:namespace />myCalendarList',
 
-					<portlet:namespace />refreshVisibleCalendarRenderingRules();
-				}
-			},
-			boundingBox: '#<portlet:namespace />otherCalendarList',
+				<%
+				updateCalendarsJSONArray(request, userCalendarsJSONArray);
+				%>
 
-			<%
-			updateCalendarsJSONArray(request, otherCalendarsJSONArray);
-			%>
+				calendars: <%= userCalendarsJSONArray %>,
+				scheduler: <portlet:namespace />scheduler,
+				simpleMenu: window.<portlet:namespace />calendarsMenu,
+				visible: <%= themeDisplay.isSignedIn() %>
+			}
+		).render();
+	</c:if>
 
-			calendars: <%= otherCalendarsJSONArray %>,
-			scheduler: <portlet:namespace />scheduler,
-			simpleMenu: window.<portlet:namespace />calendarsMenu
-		}
-	).render();
+	<c:if test="<%= themeDisplay.isSignedIn() %>">
+		window.<portlet:namespace />otherCalendarList = new Liferay.CalendarList(
+			{
+				after: {
+					calendarsChange: function(event) {
+						syncCalendarsMap();
 
-	window.<portlet:namespace />siteCalendarList = new Liferay.CalendarList(
-		{
-			after: {
-				calendarsChange: syncCalendarsMap,
-				'scheduler-calendar:visibleChange': function(event) {
-					syncCalendarsMap();
+						<portlet:namespace />scheduler.load();
 
-					<portlet:namespace />refreshVisibleCalendarRenderingRules();
-				}
-			},
-			boundingBox: '#<portlet:namespace />siteCalendarList',
+						var calendarIds = A.Array.invoke(event.newVal, 'get', 'calendarId');
 
-			<%
-			updateCalendarsJSONArray(request, groupCalendarsJSONArray);
-			%>
+						Liferay.Store('otherCalendars', calendarIds.join());
+					},
+					'scheduler-calendar:visibleChange': function(event) {
+						syncCalendarsMap();
 
-			calendars: <%= groupCalendarsJSONArray %>,
-			scheduler: <portlet:namespace />scheduler,
-			simpleMenu: window.<portlet:namespace />calendarsMenu
-		}
-	).render();
+						<portlet:namespace />refreshVisibleCalendarRenderingRules();
+					}
+				},
+				boundingBox: '#<portlet:namespace />otherCalendarList',
+
+				<%
+				updateCalendarsJSONArray(request, otherCalendarsJSONArray);
+				%>
+
+				calendars: <%= otherCalendarsJSONArray %>,
+				scheduler: <portlet:namespace />scheduler,
+				simpleMenu: window.<portlet:namespace />calendarsMenu
+			}
+		).render();
+	</c:if>
+
+	<c:if test="<%= groupCalendarResource != null %>">
+		window.<portlet:namespace />siteCalendarList = new Liferay.CalendarList(
+			{
+				after: {
+					calendarsChange: syncCalendarsMap,
+					'scheduler-calendar:visibleChange': function(event) {
+						syncCalendarsMap();
+
+						<portlet:namespace />refreshVisibleCalendarRenderingRules();
+					}
+				},
+				boundingBox: '#<portlet:namespace />siteCalendarList',
+
+				<%
+				updateCalendarsJSONArray(request, groupCalendarsJSONArray);
+				%>
+
+				calendars: <%= groupCalendarsJSONArray %>,
+				scheduler: <portlet:namespace />scheduler,
+				simpleMenu: window.<portlet:namespace />calendarsMenu
+			}
+		).render();
+	</c:if>
 
 	syncCalendarsMap();
 
@@ -250,19 +311,38 @@ JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDispl
 		}
 	);
 
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="calendarResources" var="calendarResourcesURL" />
+	<c:if test="<%= themeDisplay.isSignedIn() %>">
+		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="calendarResources" var="calendarResourcesURL" />
 
-	var addOtherCalendarInput = A.one('#<portlet:namespace />addOtherCalendar');
+		var addOtherCalendarInput = A.one('#<portlet:namespace />addOtherCalendar');
 
-	Liferay.CalendarUtil.createCalendarsAutoComplete(
-		'<%= calendarResourcesURL %>',
-		addOtherCalendarInput,
+		Liferay.CalendarUtil.createCalendarsAutoComplete(
+			'<%= calendarResourcesURL %>',
+			addOtherCalendarInput,
+			function(event) {
+				window.<portlet:namespace />otherCalendarList.add(event.result.raw);
+
+				<portlet:namespace />refreshVisibleCalendarRenderingRules();
+
+				addOtherCalendarInput.val('');
+			}
+		);
+	</c:if>
+
+	A.one('#<portlet:namespace />columnToggler').on(
+		'click',
 		function(event) {
-			window.<portlet:namespace />otherCalendarList.add(event.result.raw);
+			var columnGrid = A.one('#<portlet:namespace />columnGrid');
+			var columnOptions = A.one('#<portlet:namespace />columnOptions');
+			var columnTogglerIcon = A.one('#<portlet:namespace />columnTogglerIcon');
 
-			<portlet:namespace />refreshVisibleCalendarRenderingRules();
+			Liferay.Store('calendar-portlet-column-options-visible', columnOptions.hasClass('hide'));
 
-			addOtherCalendarInput.val('');
+			columnGrid.toggleClass('span9').toggleClass('span12');
+
+			columnOptions.toggleClass('hide');
+
+			columnTogglerIcon.toggleClass('icon-caret-left').toggleClass('icon-caret-right');
 		}
 	);
 </aui:script>
@@ -303,8 +383,8 @@ JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDispl
 
 		Liferay.CalendarUtil.getCalendarRenderingRules(
 			A.Object.keys(Liferay.CalendarUtil.visibleCalendars),
-			Liferay.CalendarUtil.toUTCTimeZone(miniCalendarStartDate),
-			Liferay.CalendarUtil.toUTCTimeZone(miniCalendarEndDate),
+			Liferay.CalendarUtil.toUTC(miniCalendarStartDate),
+			Liferay.CalendarUtil.toUTC(miniCalendarEndDate),
 			'busy',
 			function(rulesDefinition) {
 				window.<portlet:namespace />miniCalendar.set(
@@ -318,6 +398,10 @@ JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDispl
 							DateMath.toMidnight(date);
 
 							var selected = (selectedDates.length > 0) && A.Date.isInRange(date, selectedDates[0], selectedDates[selectedDates.length - 1]);
+
+							if (A.DataType.DateMath.isToday(date)) {
+								node.addClass('lfr-current-day');
+							}
 
 							node.toggleClass('yui3-calendar-day-selected', selected);
 						},
@@ -342,7 +426,8 @@ JSONArray otherCalendarsJSONArray = CalendarUtil.toCalendarsJSONArray(themeDispl
 				}
 			},
 			date: new Date(<%= String.valueOf(date) %>),
-			locale: 'en'
+			locale: 'en',
+			'strings.first_weekday': <%= weekStartsOn %>
 		}
 	).render('#<portlet:namespace />miniCalendarContainer');
 

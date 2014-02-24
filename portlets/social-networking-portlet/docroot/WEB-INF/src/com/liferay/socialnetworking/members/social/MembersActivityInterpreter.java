@@ -22,8 +22,8 @@ import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.social.model.BaseSocialActivityInterpreter;
 import com.liferay.portlet.social.model.SocialActivity;
 
@@ -32,12 +32,14 @@ import com.liferay.portlet.social.model.SocialActivity;
  */
 public class MembersActivityInterpreter extends BaseSocialActivityInterpreter {
 
+	@Override
 	public String[] getClassNames() {
 		return _CLASS_NAMES;
 	}
 
 	@Override
-	protected String getLink(SocialActivity activity, ThemeDisplay themeDisplay)
+	protected String getLink(
+			SocialActivity activity, ServiceContext serviceContext)
 		throws Exception {
 
 		int activityType = activity.getType();
@@ -48,8 +50,8 @@ public class MembersActivityInterpreter extends BaseSocialActivityInterpreter {
 
 		StringBundler sb = new StringBundler(5);
 
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(themeDisplay.getPathFriendlyURLPublic());
+		sb.append(serviceContext.getPortalURL());
+		sb.append(serviceContext.getPathFriendlyURLPublic());
 		sb.append(StringPool.SLASH);
 
 		User creatorUser = UserLocalServiceUtil.getUserById(
@@ -65,7 +67,7 @@ public class MembersActivityInterpreter extends BaseSocialActivityInterpreter {
 	@Override
 	protected Object[] getTitleArguments(
 			String groupName, SocialActivity activity, String link,
-			String title, ThemeDisplay themeDisplay)
+			String title, ServiceContext serviceContext)
 		throws Exception {
 
 		int activityType = activity.getType();
@@ -75,15 +77,15 @@ public class MembersActivityInterpreter extends BaseSocialActivityInterpreter {
 		}
 
 		String creatorUserName = getUserName(
-			activity.getUserId(), themeDisplay);
+			activity.getUserId(), serviceContext);
 
 		String creatorUserNameURL = wrapLink(
-			getLink(activity, themeDisplay), creatorUserName);
+			getLink(activity, serviceContext), creatorUserName);
 
 		StringBundler sb = new StringBundler(4);
 
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(themeDisplay.getPathFriendlyURLPublic());
+		sb.append(serviceContext.getPortalURL());
+		sb.append(serviceContext.getPathFriendlyURLPublic());
 
 		Organization organization =
 			OrganizationLocalServiceUtil.getOrganization(activity.getClassPK());
@@ -116,7 +118,7 @@ public class MembersActivityInterpreter extends BaseSocialActivityInterpreter {
 	@Override
 	protected boolean hasPermissions(
 		PermissionChecker permissionChecker, SocialActivity activity,
-		String actionId, ThemeDisplay themeDisplay) {
+		String actionId, ServiceContext serviceContext) {
 
 		return true;
 	}

@@ -14,12 +14,17 @@
  */
 --%>
 
+<%
+String backURL = PortalUtil.getCurrentURL(request);
+%>
+
 <aui:script use="liferay-calendar-simple-menu,liferay-calendar-simple-color-picker">
 	window.<portlet:namespace />calendarListsMenu = new Liferay.SimpleMenu(
 		{
 			align: {
 				points: [A.WidgetPositionAlign.TL, A.WidgetPositionAlign.BL]
 			},
+			constrain: true,
 			items: [
 				{
 					caption: '<liferay-ui:message key="add-calendar" />',
@@ -29,16 +34,30 @@
 						var calendarResourceId = instance.calendarResourceId;
 
 						if (calendarResourceId) {
-							<portlet:renderURL var="editCalendarURL">
+							<portlet:renderURL var="editCalendarURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 								<portlet:param name="mvcPath" value="/edit_calendar.jsp" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
 								<portlet:param name="calendarResourceId" value="{calendarResourceId}" />
 							</portlet:renderURL>
 
-							window.location.href = A.Lang.sub(
-								decodeURIComponent('<%= editCalendarURL %>'),
+							Liferay.Util.openWindow(
 								{
-									calendarResourceId: calendarResourceId
+									dialog: {
+										after: {
+											destroy: function(event) {
+												window.location.reload();
+											}
+										},
+										destroyOnHide: true,
+										modal: true
+									},
+									refreshWindow: window,
+									title: Liferay.Language.get('add-calendar'),
+									uri: A.Lang.sub(
+										decodeURIComponent('<%= editCalendarURL %>'),
+										{
+											calendarResourceId: calendarResourceId
+										}
+									)
 								}
 							);
 						}
@@ -79,7 +98,46 @@
 	window.<portlet:namespace />calendarsMenu = {
 		items: [
 			{
-				caption: '<liferay-ui:message key="hide-this-calendar-from-the-list" />',
+				caption: '<liferay-ui:message key="add-calendar-booking" />',
+				fn: function(event) {
+					var instance = this;
+
+					var calendarList = instance.get('host');
+
+					var activeCalendar = calendarList.activeItem;
+
+					<portlet:renderURL var="addCalendarBookingURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+						<portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
+						<portlet:param name="backURL" value="<%= backURL %>" />
+						<portlet:param name="calendarId" value="{calendarId}" />
+					</portlet:renderURL>
+
+					Liferay.Util.openWindow(
+						{
+							dialog: {
+								after: {
+									destroy: function(event) {
+										scheduler.load();
+									}
+								},
+								destroyOnHide: true,
+								modal: true
+							},
+							refreshWindow: window,
+							title: Liferay.Language.get('new-calendar-booking'),
+							uri: A.Lang.sub(
+								decodeURIComponent('<%= addCalendarBookingURL %>'),
+								{
+									calendarId: activeCalendar.get('calendarId')
+								}
+							)
+						}
+					);
+				},
+				id: 'addEvent'
+			},
+			{
+				caption: '<liferay-ui:message key="hide-calendar" />',
 				fn: function(event) {
 					var instance = this;
 
@@ -102,17 +160,31 @@
 
 					var activeCalendar = calendarList.activeItem;
 
-					<portlet:renderURL var="editCalendarURL">
+					<portlet:renderURL var="editCalendarURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="mvcPath" value="/edit_calendar.jsp" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
 						<portlet:param name="calendarId" value="{calendarId}" />
 					</portlet:renderURL>
 
-					window.location.href = A.Lang.sub(
-						decodeURIComponent('<%= editCalendarURL %>'),
+					Liferay.Util.openWindow(
 						{
-							calendarId: activeCalendar.get('calendarId'),
-							calendarResourceId: activeCalendar.get('calendarResourceId')
+							dialog: {
+								after: {
+									destroy: function(event) {
+										scheduler.load();
+									}
+								},
+								destroyOnHide: true,
+								modal: true
+							},
+							refreshWindow: window,
+							title: Liferay.Language.get('calendar-settings'),
+							uri: A.Lang.sub(
+								decodeURIComponent('<%= editCalendarURL %>'),
+								{
+									calendarId: activeCalendar.get('calendarId'),
+									calendarResourceId: activeCalendar.get('calendarResourceId')
+								}
+							)
 						}
 					);
 				},
@@ -133,14 +205,30 @@
 						resourceGroupId="{resourceGroupId}"
 						resourcePrimKey="{resourcePrimKey}"
 						var="permissionsURL"
+						windowState="<%= LiferayWindowState.POP_UP.toString() %>"
 					/>
 
-					window.location.href = A.Lang.sub(
-						decodeURIComponent('<%= permissionsURL %>'),
+					Liferay.Util.openWindow(
 						{
-							resourceGroupId: activeCalendar.get('groupId'),
-							resourcePrimKey: activeCalendar.get('calendarId'),
-							modelResourceDescription: activeCalendar.get('name')
+							dialog: {
+								after: {
+									destroy: function(event) {
+										scheduler.load();
+									}
+								},
+								destroyOnHide: true,
+								modal: true
+							},
+							refreshWindow: window,
+							title: Liferay.Language.get('permissions'),
+							uri: A.Lang.sub(
+								decodeURIComponent('<%= permissionsURL %>'),
+								{
+									resourceGroupId: activeCalendar.get('groupId'),
+									resourcePrimKey: activeCalendar.get('calendarId'),
+									modelResourceDescription: activeCalendar.get('name')
+								}
+							)
 						}
 					);
 				},
@@ -188,11 +276,6 @@
 
 						<liferay-portlet:resourceURL id="calendarBookingsRSS" varImpl="calendarRSSURL">
 							<portlet:param name="calendarId" value="{calendarId}" />
-							<portlet:param name="timeInterval" value="<%= String.valueOf(rssTimeInterval) %>" />
-							<portlet:param name="max" value="<%= String.valueOf(rssDelta) %>" />
-							<portlet:param name="type" value="<%= RSSUtil.getFeedTypeFormat(rssFeedType) %>" />
-							<portlet:param name="version" value="<%= String.valueOf(RSSUtil.getFeedTypeVersion(rssFeedType)) %>" />
-							<portlet:param name="displayStyle" value="<%= rssDisplayStyle %>" />
 						</liferay-portlet:resourceURL>
 
 						var url = A.Lang.sub(
@@ -211,10 +294,12 @@
 			</c:if>
 
 			{
-				caption: '-'
+				caption: '-',
+				id: 'separator1'
 			},
 			{
-				caption: '<div class="calendar-portlet-color-picker"></div>'
+				caption: '<div class="calendar-portlet-color-picker"></div>',
+				id: 'colorPicker'
 			}
 		],
 		on: {
@@ -223,7 +308,7 @@
 
 				var calendarList = instance.get('host');
 
-				var calendar = calendarList.activeItem
+				var calendar = calendarList.activeItem;
 
 				if (calendar && event.newVal) {
 					var permissions = calendar.get('permissions');
@@ -234,8 +319,14 @@
 						hiddenItems.push('hide');
 					}
 
-					if (permissions.DELETE === false) {
+					var defaultCalendar = calendar.get('defaultCalendar');
+
+					if ((permissions.DELETE === false) || (defaultCalendar === true)) {
 						hiddenItems.push('delete');
+					}
+
+					if (permissions.MANAGE_BOOKINGS === false) {
+						hiddenItems.push('addEvent');
 					}
 
 					if (permissions.PERMISSIONS === false) {
@@ -244,6 +335,8 @@
 
 					if (permissions.UPDATE === false) {
 						hiddenItems.push('settings');
+						hiddenItems.push('separator1');
+						hiddenItems.push('colorPicker');
 					}
 
 					instance.set('hiddenItems', hiddenItems);
@@ -253,7 +346,7 @@
 					<portlet:namespace />colorPicker.setAttrs(
 						{
 							color: calendar.get('color'),
-							visible: permissions.UPDATE
+							visible: true
 						}
 					);
 
@@ -262,7 +355,8 @@
 					colorPickerContainer.append(window.<portlet:namespace />colorPicker.get('boundingBox'));
 				}
 			}
-		}
+		},
+		width: 225
 	};
 
 	<portlet:namespace />colorPicker = new Liferay.SimpleColorPicker(
@@ -299,7 +393,7 @@
 
 			window.<portlet:namespace />calendarListsMenu.setAttrs(
 				{
-					'align.node': target,
+					alignNode: target,
 					visible: !window.<portlet:namespace />calendarListsMenu.get('visible')
 				}
 			);
@@ -308,6 +402,6 @@
 
 			event.stopImmediatePropagation();
 		},
-		'.aui-calendar-list-item-arrow'
+		'.calendar-list-item-arrow'
 	);
 </aui:script>

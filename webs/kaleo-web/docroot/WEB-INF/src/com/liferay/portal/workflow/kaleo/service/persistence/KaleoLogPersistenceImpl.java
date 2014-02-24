@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -48,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the kaleo log service.
@@ -110,6 +112,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -129,6 +132,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -148,6 +152,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByCompanyId(long companyId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -254,6 +259,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -283,6 +289,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoLog> list = findByCompanyId(companyId, 0, 1, orderByComparator);
@@ -303,6 +310,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -332,9 +340,14 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByCompanyId(companyId, count - 1, count,
 				orderByComparator);
@@ -356,6 +369,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByCompanyId_PrevAndNext(long kaleoLogId,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -497,6 +511,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (KaleoLog kaleoLog : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -511,6 +526,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -585,6 +601,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, QueryUtil.ALL_POS,
@@ -604,6 +621,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoDefinitionId(long kaleoDefinitionId,
 		int start, int end) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, start, end, null);
@@ -623,6 +641,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoDefinitionId(long kaleoDefinitionId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -734,6 +753,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoDefinitionId_First(long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -764,6 +784,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoDefinitionId_First(long kaleoDefinitionId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoLog> list = findByKaleoDefinitionId(kaleoDefinitionId, 0, 1,
@@ -785,6 +806,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoDefinitionId_Last(long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -815,9 +837,14 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoDefinitionId_Last(long kaleoDefinitionId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByKaleoDefinitionId(kaleoDefinitionId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByKaleoDefinitionId(kaleoDefinitionId,
 				count - 1, count, orderByComparator);
@@ -839,6 +866,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByKaleoDefinitionId_PrevAndNext(long kaleoLogId,
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -980,6 +1008,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param kaleoDefinitionId the kaleo definition ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		for (KaleoLog kaleoLog : findByKaleoDefinitionId(kaleoDefinitionId,
@@ -995,6 +1024,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEODEFINITIONID;
@@ -1071,6 +1101,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, QueryUtil.ALL_POS,
@@ -1090,6 +1121,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoInstanceId(long kaleoInstanceId,
 		int start, int end) throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, start, end, null);
@@ -1109,6 +1141,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoInstanceId(long kaleoInstanceId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1220,6 +1253,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoInstanceId_First(long kaleoInstanceId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -1250,6 +1284,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoInstanceId_First(long kaleoInstanceId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoLog> list = findByKaleoInstanceId(kaleoInstanceId, 0, 1,
@@ -1271,6 +1306,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoInstanceId_Last(long kaleoInstanceId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -1301,9 +1337,14 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoInstanceId_Last(long kaleoInstanceId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByKaleoInstanceId(kaleoInstanceId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByKaleoInstanceId(kaleoInstanceId, count - 1,
 				count, orderByComparator);
@@ -1325,6 +1366,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByKaleoInstanceId_PrevAndNext(long kaleoLogId,
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -1466,6 +1508,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param kaleoInstanceId the kaleo instance ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		for (KaleoLog kaleoLog : findByKaleoInstanceId(kaleoInstanceId,
@@ -1481,6 +1524,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEOINSTANCEID;
@@ -1561,6 +1605,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId) throws SystemException {
 		return findByKaleoTaskInstanceTokenId(kaleoTaskInstanceTokenId,
@@ -1580,6 +1625,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId, int start, int end)
 		throws SystemException {
@@ -1601,6 +1647,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1712,6 +1759,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoTaskInstanceTokenId_First(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -1742,6 +1790,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoTaskInstanceTokenId_First(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1764,6 +1813,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKaleoTaskInstanceTokenId_Last(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -1794,10 +1844,15 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKaleoTaskInstanceTokenId_Last(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByKaleoTaskInstanceTokenId(kaleoTaskInstanceTokenId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByKaleoTaskInstanceTokenId(kaleoTaskInstanceTokenId,
 				count - 1, count, orderByComparator);
@@ -1819,6 +1874,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByKaleoTaskInstanceTokenId_PrevAndNext(
 		long kaleoLogId, long kaleoTaskInstanceTokenId,
 		OrderByComparator orderByComparator)
@@ -1961,6 +2017,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId)
 		throws SystemException {
 		for (KaleoLog kaleoLog : findByKaleoTaskInstanceTokenId(
@@ -1977,6 +2034,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEOTASKINSTANCETOKENID;
@@ -2054,6 +2112,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKITI_T(long kaleoInstanceTokenId, String type)
 		throws SystemException {
 		return findByKITI_T(kaleoInstanceTokenId, type, QueryUtil.ALL_POS,
@@ -2074,6 +2133,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKITI_T(long kaleoInstanceTokenId, String type,
 		int start, int end) throws SystemException {
 		return findByKITI_T(kaleoInstanceTokenId, type, start, end, null);
@@ -2094,6 +2154,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKITI_T(long kaleoInstanceTokenId, String type,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -2225,6 +2286,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKITI_T_First(long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -2259,6 +2321,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKITI_T_First(long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoLog> list = findByKITI_T(kaleoInstanceTokenId, type, 0, 1,
@@ -2281,6 +2344,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKITI_T_Last(long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator)
 		throws NoSuchLogException, SystemException {
@@ -2315,9 +2379,14 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKITI_T_Last(long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByKITI_T(kaleoInstanceTokenId, type);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByKITI_T(kaleoInstanceTokenId, type,
 				count - 1, count, orderByComparator);
@@ -2340,6 +2409,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByKITI_T_PrevAndNext(long kaleoLogId,
 		long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator)
@@ -2501,6 +2571,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param type the type
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKITI_T(long kaleoInstanceTokenId, String type)
 		throws SystemException {
 		for (KaleoLog kaleoLog : findByKITI_T(kaleoInstanceTokenId, type,
@@ -2517,6 +2588,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKITI_T(long kaleoInstanceTokenId, String type)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KITI_T;
@@ -2627,6 +2699,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKCN_KCPK_KITI_T(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type)
 		throws SystemException {
@@ -2651,6 +2724,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKCN_KCPK_KITI_T(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type, int start,
 		int end) throws SystemException {
@@ -2675,6 +2749,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findByKCN_KCPK_KITI_T(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
@@ -2835,6 +2910,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKCN_KCPK_KITI_T_First(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator)
@@ -2878,6 +2954,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKCN_KCPK_KITI_T_First(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -2904,6 +2981,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByKCN_KCPK_KITI_T_Last(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator)
@@ -2947,11 +3025,16 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the last matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByKCN_KCPK_KITI_T_Last(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByKCN_KCPK_KITI_T(kaleoClassName, kaleoClassPK,
 				kaleoInstanceTokenId, type);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoLog> list = findByKCN_KCPK_KITI_T(kaleoClassName,
 				kaleoClassPK, kaleoInstanceTokenId, type, count - 1, count,
@@ -2977,6 +3060,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog[] findByKCN_KCPK_KITI_T_PrevAndNext(long kaleoLogId,
 		String kaleoClassName, long kaleoClassPK, long kaleoInstanceTokenId,
 		String type, OrderByComparator orderByComparator)
@@ -3165,6 +3249,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param type the type
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKCN_KCPK_KITI_T(String kaleoClassName,
 		long kaleoClassPK, long kaleoInstanceTokenId, String type)
 		throws SystemException {
@@ -3185,6 +3270,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of matching kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKCN_KCPK_KITI_T(String kaleoClassName, long kaleoClassPK,
 		long kaleoInstanceTokenId, String type) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KCN_KCPK_KITI_T;
@@ -3283,11 +3369,16 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	private static final String _FINDER_COLUMN_KCN_KCPK_KITI_T_TYPE_2 = "kaleoLog.type = ?";
 	private static final String _FINDER_COLUMN_KCN_KCPK_KITI_T_TYPE_3 = "(kaleoLog.type IS NULL OR kaleoLog.type = '')";
 
+	public KaleoLogPersistenceImpl() {
+		setModelClass(KaleoLog.class);
+	}
+
 	/**
 	 * Caches the kaleo log in the entity cache if it is enabled.
 	 *
 	 * @param kaleoLog the kaleo log
 	 */
+	@Override
 	public void cacheResult(KaleoLog kaleoLog) {
 		EntityCacheUtil.putResult(KaleoLogModelImpl.ENTITY_CACHE_ENABLED,
 			KaleoLogImpl.class, kaleoLog.getPrimaryKey(), kaleoLog);
@@ -3300,6 +3391,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 *
 	 * @param kaleoLogs the kaleo logs
 	 */
+	@Override
 	public void cacheResult(List<KaleoLog> kaleoLogs) {
 		for (KaleoLog kaleoLog : kaleoLogs) {
 			if (EntityCacheUtil.getResult(
@@ -3326,7 +3418,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 			CacheRegistryUtil.clear(KaleoLogImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(KaleoLogImpl.class.getName());
+		EntityCacheUtil.clearCache(KaleoLogImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -3366,6 +3458,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @param kaleoLogId the primary key for the new kaleo log
 	 * @return the new kaleo log
 	 */
+	@Override
 	public KaleoLog create(long kaleoLogId) {
 		KaleoLog kaleoLog = new KaleoLogImpl();
 
@@ -3383,6 +3476,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog remove(long kaleoLogId)
 		throws NoSuchLogException, SystemException {
 		return remove((Serializable)kaleoLogId);
@@ -3627,7 +3721,9 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 		}
 
 		EntityCacheUtil.putResult(KaleoLogModelImpl.ENTITY_CACHE_ENABLED,
-			KaleoLogImpl.class, kaleoLog.getPrimaryKey(), kaleoLog);
+			KaleoLogImpl.class, kaleoLog.getPrimaryKey(), kaleoLog, false);
+
+		kaleoLog.resetOriginalValues();
 
 		return kaleoLog;
 	}
@@ -3709,6 +3805,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchLogException if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog findByPrimaryKey(long kaleoLogId)
 		throws NoSuchLogException, SystemException {
 		return findByPrimaryKey((Serializable)kaleoLogId);
@@ -3768,6 +3865,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the kaleo log, or <code>null</code> if a kaleo log with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoLog fetchByPrimaryKey(long kaleoLogId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)kaleoLogId);
@@ -3779,6 +3877,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -3795,6 +3894,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the range of kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -3812,6 +3912,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the ordered range of kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoLog> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -3897,6 +3998,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (KaleoLog kaleoLog : findAll()) {
 			remove(kaleoLog);
@@ -3909,6 +4011,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	 * @return the number of kaleo logs
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -3938,6 +4041,11 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -3982,6 +4090,9 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(KaleoLogPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"type", "comment"
+			});
 	private static KaleoLog _nullKaleoLog = new KaleoLogImpl() {
 			@Override
 			public Object clone() {
@@ -3995,6 +4106,7 @@ public class KaleoLogPersistenceImpl extends BasePersistenceImpl<KaleoLog>
 		};
 
 	private static CacheModel<KaleoLog> _nullKaleoLogCacheModel = new CacheModel<KaleoLog>() {
+			@Override
 			public KaleoLog toEntityModel() {
 				return _nullKaleoLog;
 			}

@@ -41,10 +41,9 @@ import javax.portlet.PortletURL;
  */
 public class KBArticleAssetRendererFactory extends BaseAssetRendererFactory {
 
-	public static final String CLASS_NAME = KBArticle.class.getName();
-
 	public static final String TYPE = "article";
 
+	@Override
 	public AssetRenderer getAssetRenderer(long classPK, int type)
 		throws PortalException, SystemException {
 
@@ -53,23 +52,28 @@ public class KBArticleAssetRendererFactory extends BaseAssetRendererFactory {
 		if (type == TYPE_LATEST_APPROVED) {
 			kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(
 				classPK, WorkflowConstants.STATUS_APPROVED);
-
-			return new KBArticleAssetRenderer(kbArticle);
+		}
+		else {
+			try {
+				kbArticle = KBArticleLocalServiceUtil.getKBArticle(classPK);
+			}
+			catch (NoSuchArticleException nsae) {
+				kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(
+					classPK, WorkflowConstants.STATUS_ANY);
+			}
 		}
 
-		try {
-			kbArticle = KBArticleLocalServiceUtil.getKBArticle(classPK);
-		}
-		catch (NoSuchArticleException nsae) {
-			kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(
-				classPK, WorkflowConstants.STATUS_ANY);
-		}
+		KBArticleAssetRenderer kbArticleAssetRenderer =
+			new KBArticleAssetRenderer(kbArticle);
 
-		return new KBArticleAssetRenderer(kbArticle);
+		kbArticleAssetRenderer.setAssetRendererType(type);
+
+		return kbArticleAssetRenderer;
 	}
 
+	@Override
 	public String getClassName() {
-		return CLASS_NAME;
+		return KBArticle.class.getName();
 	}
 
 	@Override
@@ -77,6 +81,7 @@ public class KBArticleAssetRendererFactory extends BaseAssetRendererFactory {
 		return PortletKeys.KNOWLEDGE_BASE_DISPLAY;
 	}
 
+	@Override
 	public String getType() {
 		return TYPE;
 	}
@@ -91,13 +96,6 @@ public class KBArticleAssetRendererFactory extends BaseAssetRendererFactory {
 			(ThemeDisplay)liferayPortletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if (!AdminPermission.contains(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getScopeGroupId(), ActionKeys.ADD_KB_ARTICLE)) {
-
-			return null;
-		}
-
 		PortletURL portletURL = PortletURLFactoryUtil.create(
 			liferayPortletRequest, PortletKeys.KNOWLEDGE_BASE_ADMIN,
 			getControlPanelPlid(themeDisplay), PortletRequest.RENDER_PHASE);
@@ -105,6 +103,15 @@ public class KBArticleAssetRendererFactory extends BaseAssetRendererFactory {
 		portletURL.setParameter("mvcPath", "/admin/edit_article.jsp");
 
 		return portletURL;
+	}
+
+	@Override
+	public boolean hasAddPermission(
+			PermissionChecker permissionChecker, long groupId, long classTypeId)
+		throws Exception {
+
+		return AdminPermission.contains(
+			permissionChecker, groupId, ActionKeys.ADD_KB_ARTICLE);
 	}
 
 	@Override

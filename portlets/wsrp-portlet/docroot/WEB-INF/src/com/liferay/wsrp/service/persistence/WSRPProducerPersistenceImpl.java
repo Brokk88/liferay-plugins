@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the w s r p producer service.
@@ -111,6 +113,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -128,6 +131,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -147,6 +151,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the ordered range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -267,6 +272,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -296,6 +302,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the first matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<WSRPProducer> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -316,6 +323,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -345,9 +353,14 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the last matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<WSRPProducer> list = findByUuid(uuid, count - 1, count,
 				orderByComparator);
@@ -369,6 +382,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer[] findByUuid_PrevAndNext(long wsrpProducerId,
 		String uuid, OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -524,6 +538,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (WSRPProducer wsrpProducer : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -538,6 +553,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the number of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -620,6 +636,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByUUID_G(String uuid, long groupId)
 		throws NoSuchProducerException, SystemException {
 		WSRPProducer wsrpProducer = fetchByUUID_G(uuid, groupId);
@@ -655,6 +672,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		return fetchByUUID_G(uuid, groupId, true);
@@ -669,6 +687,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { uuid, groupId };
@@ -775,6 +794,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the w s r p producer that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer removeByUUID_G(String uuid, long groupId)
 		throws NoSuchProducerException, SystemException {
 		WSRPProducer wsrpProducer = findByUUID_G(uuid, groupId);
@@ -790,6 +810,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the number of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
@@ -888,6 +909,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -908,6 +930,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid_C(String uuid, long companyId,
 		int start, int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -928,6 +951,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the ordered range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByUuid_C(String uuid, long companyId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1059,6 +1083,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1093,6 +1118,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the first matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<WSRPProducer> list = findByUuid_C(uuid, companyId, 0, 1,
@@ -1115,6 +1141,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1149,9 +1176,14 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the last matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<WSRPProducer> list = findByUuid_C(uuid, companyId, count - 1,
 				count, orderByComparator);
@@ -1174,6 +1206,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer[] findByUuid_C_PrevAndNext(long wsrpProducerId,
 		String uuid, long companyId, OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1334,6 +1367,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (WSRPProducer wsrpProducer : findByUuid_C(uuid, companyId,
@@ -1350,6 +1384,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the number of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1447,6 +1482,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1466,6 +1502,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -1485,6 +1522,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the ordered range of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findByCompanyId(long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1591,6 +1629,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1621,6 +1660,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the first matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<WSRPProducer> list = findByCompanyId(companyId, 0, 1,
@@ -1642,6 +1682,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1672,9 +1713,14 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the last matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<WSRPProducer> list = findByCompanyId(companyId, count - 1, count,
 				orderByComparator);
@@ -1696,6 +1742,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer[] findByCompanyId_PrevAndNext(long wsrpProducerId,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchProducerException, SystemException {
@@ -1837,6 +1884,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (WSRPProducer wsrpProducer : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -1851,6 +1899,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the number of matching w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -1898,11 +1947,16 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 
 	private static final String _FINDER_COLUMN_COMPANYID_COMPANYID_2 = "wsrpProducer.companyId = ?";
 
+	public WSRPProducerPersistenceImpl() {
+		setModelClass(WSRPProducer.class);
+	}
+
 	/**
 	 * Caches the w s r p producer in the entity cache if it is enabled.
 	 *
 	 * @param wsrpProducer the w s r p producer
 	 */
+	@Override
 	public void cacheResult(WSRPProducer wsrpProducer) {
 		EntityCacheUtil.putResult(WSRPProducerModelImpl.ENTITY_CACHE_ENABLED,
 			WSRPProducerImpl.class, wsrpProducer.getPrimaryKey(), wsrpProducer);
@@ -1919,6 +1973,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 *
 	 * @param wsrpProducers the w s r p producers
 	 */
+	@Override
 	public void cacheResult(List<WSRPProducer> wsrpProducers) {
 		for (WSRPProducer wsrpProducer : wsrpProducers) {
 			if (EntityCacheUtil.getResult(
@@ -1945,7 +2000,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 			CacheRegistryUtil.clear(WSRPProducerImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(WSRPProducerImpl.class.getName());
+		EntityCacheUtil.clearCache(WSRPProducerImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -2039,6 +2094,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @param wsrpProducerId the primary key for the new w s r p producer
 	 * @return the new w s r p producer
 	 */
+	@Override
 	public WSRPProducer create(long wsrpProducerId) {
 		WSRPProducer wsrpProducer = new WSRPProducerImpl();
 
@@ -2060,6 +2116,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer remove(long wsrpProducerId)
 		throws NoSuchProducerException, SystemException {
 		return remove((Serializable)wsrpProducerId);
@@ -2242,10 +2299,13 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 		}
 
 		EntityCacheUtil.putResult(WSRPProducerModelImpl.ENTITY_CACHE_ENABLED,
-			WSRPProducerImpl.class, wsrpProducer.getPrimaryKey(), wsrpProducer);
+			WSRPProducerImpl.class, wsrpProducer.getPrimaryKey(), wsrpProducer,
+			false);
 
 		clearUniqueFindersCache(wsrpProducer);
 		cacheUniqueFindersCache(wsrpProducer);
+
+		wsrpProducer.resetOriginalValues();
 
 		return wsrpProducer;
 	}
@@ -2306,6 +2366,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @throws com.liferay.wsrp.NoSuchProducerException if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer findByPrimaryKey(long wsrpProducerId)
 		throws NoSuchProducerException, SystemException {
 		return findByPrimaryKey((Serializable)wsrpProducerId);
@@ -2366,6 +2427,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the w s r p producer, or <code>null</code> if a w s r p producer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WSRPProducer fetchByPrimaryKey(long wsrpProducerId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)wsrpProducerId);
@@ -2377,6 +2439,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2393,6 +2456,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the range of w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -2411,6 +2475,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the ordered range of w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WSRPProducer> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2496,6 +2561,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (WSRPProducer wsrpProducer : findAll()) {
 			remove(wsrpProducer);
@@ -2508,6 +2574,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	 * @return the number of w s r p producers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2537,6 +2604,11 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -2581,6 +2653,9 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(WSRPProducerPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static WSRPProducer _nullWSRPProducer = new WSRPProducerImpl() {
 			@Override
 			public Object clone() {
@@ -2594,6 +2669,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 		};
 
 	private static CacheModel<WSRPProducer> _nullWSRPProducerCacheModel = new CacheModel<WSRPProducer>() {
+			@Override
 			public WSRPProducer toEntityModel() {
 				return _nullWSRPProducer;
 			}

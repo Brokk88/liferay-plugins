@@ -31,11 +31,13 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -52,6 +54,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the calendar resource service.
@@ -119,6 +122,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		return findByResourceBlockId(resourceBlockId, QueryUtil.ALL_POS,
@@ -138,6 +142,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByResourceBlockId(long resourceBlockId,
 		int start, int end) throws SystemException {
 		return findByResourceBlockId(resourceBlockId, start, end, null);
@@ -157,6 +162,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByResourceBlockId(long resourceBlockId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -268,6 +274,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByResourceBlockId_First(long resourceBlockId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -298,6 +305,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByResourceBlockId_First(long resourceBlockId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByResourceBlockId(resourceBlockId, 0,
@@ -319,6 +327,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByResourceBlockId_Last(long resourceBlockId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -349,9 +358,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByResourceBlockId_Last(long resourceBlockId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByResourceBlockId(resourceBlockId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByResourceBlockId(resourceBlockId,
 				count - 1, count, orderByComparator);
@@ -373,6 +387,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByResourceBlockId_PrevAndNext(
 		long calendarResourceId, long resourceBlockId,
 		OrderByComparator orderByComparator)
@@ -516,6 +531,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param resourceBlockId the resource block ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		for (CalendarResource calendarResource : findByResourceBlockId(
@@ -531,6 +547,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_RESOURCEBLOCKID;
@@ -608,6 +625,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid(String uuid)
 		throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -626,6 +644,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -645,6 +664,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -765,6 +785,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -795,6 +816,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -815,6 +837,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -845,9 +868,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByUuid(uuid, count - 1, count,
 				orderByComparator);
@@ -869,6 +897,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByUuid_PrevAndNext(long calendarResourceId,
 		String uuid, OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -1024,6 +1053,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (CalendarResource calendarResource : findByUuid(uuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -1038,6 +1068,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -1121,6 +1152,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByUUID_G(String uuid, long groupId)
 		throws NoSuchResourceException, SystemException {
 		CalendarResource calendarResource = fetchByUUID_G(uuid, groupId);
@@ -1156,6 +1188,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		return fetchByUUID_G(uuid, groupId, true);
@@ -1170,6 +1203,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { uuid, groupId };
@@ -1276,6 +1310,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the calendar resource that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource removeByUUID_G(String uuid, long groupId)
 		throws NoSuchResourceException, SystemException {
 		CalendarResource calendarResource = findByUUID_G(uuid, groupId);
@@ -1291,6 +1326,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
@@ -1391,6 +1427,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1411,6 +1448,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid_C(String uuid, long companyId,
 		int start, int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -1431,6 +1469,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByUuid_C(String uuid, long companyId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1562,6 +1601,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -1596,6 +1636,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByUuid_C(uuid, companyId, 0, 1,
@@ -1618,6 +1659,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -1652,9 +1694,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByUuid_C(uuid, companyId, count - 1,
 				count, orderByComparator);
@@ -1677,6 +1724,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByUuid_C_PrevAndNext(
 		long calendarResourceId, String uuid, long companyId,
 		OrderByComparator orderByComparator)
@@ -1838,6 +1886,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (CalendarResource calendarResource : findByUuid_C(uuid, companyId,
@@ -1854,6 +1903,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1952,6 +2002,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByGroupId(long groupId)
 		throws SystemException {
 		return findByGroupId(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -1970,6 +2021,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByGroupId(long groupId, int start, int end)
 		throws SystemException {
 		return findByGroupId(groupId, start, end, null);
@@ -1989,6 +2041,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByGroupId(long groupId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2095,6 +2148,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByGroupId_First(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -2125,6 +2179,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByGroupId_First(long groupId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByGroupId(groupId, 0, 1,
@@ -2146,6 +2201,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -2176,9 +2232,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByGroupId(groupId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByGroupId(groupId, count - 1, count,
 				orderByComparator);
@@ -2200,6 +2261,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByGroupId_PrevAndNext(
 		long calendarResourceId, long groupId,
 		OrderByComparator orderByComparator)
@@ -2343,6 +2405,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByGroupId(long groupId)
 		throws SystemException {
 		return filterFindByGroupId(groupId, QueryUtil.ALL_POS,
@@ -2362,6 +2425,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByGroupId(long groupId, int start,
 		int end) throws SystemException {
 		return filterFindByGroupId(groupId, start, end, null);
@@ -2381,6 +2445,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByGroupId(long groupId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
@@ -2446,6 +2511,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] filterFindByGroupId_PrevAndNext(
 		long calendarResourceId, long groupId,
 		OrderByComparator orderByComparator)
@@ -2596,6 +2662,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param groupId the group ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByGroupId(long groupId) throws SystemException {
 		for (CalendarResource calendarResource : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -2610,6 +2677,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByGroupId(long groupId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GROUPID;
 
@@ -2662,6 +2730,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByGroupId(long groupId) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
@@ -2732,6 +2801,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByActive(boolean active)
 		throws SystemException {
 		return findByActive(active, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -2750,6 +2820,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByActive(boolean active, int start,
 		int end) throws SystemException {
 		return findByActive(active, start, end, null);
@@ -2769,6 +2840,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByActive(boolean active, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2875,6 +2947,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByActive_First(boolean active,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -2905,6 +2978,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByActive_First(boolean active,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByActive(active, 0, 1,
@@ -2926,6 +3000,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByActive_Last(boolean active,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -2956,9 +3031,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByActive_Last(boolean active,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByActive(active);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByActive(active, count - 1, count,
 				orderByComparator);
@@ -2980,6 +3060,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByActive_PrevAndNext(
 		long calendarResourceId, boolean active,
 		OrderByComparator orderByComparator)
@@ -3122,6 +3203,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param active the active
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByActive(boolean active) throws SystemException {
 		for (CalendarResource calendarResource : findByActive(active,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -3136,6 +3218,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByActive(boolean active) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_ACTIVE;
 
@@ -3216,6 +3299,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long groupId, String code)
 		throws SystemException {
 		return findByG_C(groupId, code, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -3236,6 +3320,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long groupId, String code,
 		int start, int end) throws SystemException {
 		return findByG_C(groupId, code, start, end, null);
@@ -3256,6 +3341,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long groupId, String code,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3387,6 +3473,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByG_C_First(long groupId, String code,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -3421,6 +3508,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByG_C_First(long groupId, String code,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByG_C(groupId, code, 0, 1,
@@ -3443,6 +3531,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByG_C_Last(long groupId, String code,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -3477,9 +3566,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByG_C_Last(long groupId, String code,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByG_C(groupId, code);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByG_C(groupId, code, count - 1,
 				count, orderByComparator);
@@ -3502,6 +3596,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByG_C_PrevAndNext(long calendarResourceId,
 		long groupId, String code, OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -3663,6 +3758,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long groupId, String code)
 		throws SystemException {
 		return filterFindByG_C(groupId, code, QueryUtil.ALL_POS,
@@ -3683,6 +3779,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long groupId, String code,
 		int start, int end) throws SystemException {
 		return filterFindByG_C(groupId, code, start, end, null);
@@ -3703,6 +3800,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long groupId, String code,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3788,6 +3886,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] filterFindByG_C_PrevAndNext(
 		long calendarResourceId, long groupId, String code,
 		OrderByComparator orderByComparator)
@@ -3958,6 +4057,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long[] groupIds, String code)
 		throws SystemException {
 		return filterFindByG_C(groupIds, code, QueryUtil.ALL_POS,
@@ -3978,6 +4078,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long[] groupIds, String code,
 		int start, int end) throws SystemException {
 		return filterFindByG_C(groupIds, code, start, end, null);
@@ -3998,6 +4099,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_C(long[] groupIds, String code,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -4005,47 +4107,47 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 			return findByG_C(groupIds, code, start, end, orderByComparator);
 		}
 
+		if (groupIds == null) {
+			groupIds = new long[0];
+		}
+		else {
+			groupIds = ArrayUtil.unique(groupIds);
+		}
+
 		StringBundler query = new StringBundler();
 
 		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
 
-		boolean conjunctionable = false;
-
-		if ((groupIds == null) || (groupIds.length > 0)) {
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
+		if (groupIds.length > 0) {
 			query.append(StringPool.OPEN_PARENTHESIS);
 
-			for (int i = 0; i < groupIds.length; i++) {
-				query.append(_FINDER_COLUMN_G_C_GROUPID_5);
+			query.append(_FINDER_COLUMN_G_C_GROUPID_7);
 
-				if ((i + 1) < groupIds.length) {
-					query.append(WHERE_OR);
-				}
-			}
+			query.append(StringUtil.merge(groupIds));
 
 			query.append(StringPool.CLOSE_PARENTHESIS);
 
-			conjunctionable = true;
-		}
+			query.append(StringPool.CLOSE_PARENTHESIS);
 
-		if (conjunctionable) {
 			query.append(WHERE_AND);
 		}
 
+		boolean bindCode = false;
+
 		if (code == null) {
-			query.append(_FINDER_COLUMN_G_C_CODE_4);
+			query.append(_FINDER_COLUMN_G_C_CODE_1);
 		}
 		else if (code.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_C_CODE_6);
+			query.append(_FINDER_COLUMN_G_C_CODE_3);
 		}
 		else {
-			query.append(_FINDER_COLUMN_G_C_CODE_5);
+			bindCode = true;
+
+			query.append(_FINDER_COLUMN_G_C_CODE_2);
 		}
 
-		conjunctionable = true;
+		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
+			query.index() - 1);
 
 		if (orderByComparator != null) {
 			appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
@@ -4069,11 +4171,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (groupIds != null) {
-				qPos.add(groupIds);
-			}
-
-			if (code != null) {
+			if (bindCode) {
 				qPos.add(code);
 			}
 
@@ -4100,6 +4198,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long[] groupIds, String code)
 		throws SystemException {
 		return findByG_C(groupIds, code, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -4120,6 +4219,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long[] groupIds, String code,
 		int start, int end) throws SystemException {
 		return findByG_C(groupIds, code, start, end, null);
@@ -4140,10 +4240,18 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_C(long[] groupIds, String code,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
-		if ((groupIds != null) && (groupIds.length == 1)) {
+		if (groupIds == null) {
+			groupIds = new long[0];
+		}
+		else {
+			groupIds = ArrayUtil.unique(groupIds);
+		}
+
+		if (groupIds.length == 1) {
 			return findByG_C(groupIds[0], code, start, end, orderByComparator);
 		}
 
@@ -4182,43 +4290,36 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 			query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
 
-			boolean conjunctionable = false;
-
-			if ((groupIds == null) || (groupIds.length > 0)) {
-				if (conjunctionable) {
-					query.append(WHERE_AND);
-				}
-
+			if (groupIds.length > 0) {
 				query.append(StringPool.OPEN_PARENTHESIS);
 
-				for (int i = 0; i < groupIds.length; i++) {
-					query.append(_FINDER_COLUMN_G_C_GROUPID_5);
+				query.append(_FINDER_COLUMN_G_C_GROUPID_7);
 
-					if ((i + 1) < groupIds.length) {
-						query.append(WHERE_OR);
-					}
-				}
+				query.append(StringUtil.merge(groupIds));
 
 				query.append(StringPool.CLOSE_PARENTHESIS);
 
-				conjunctionable = true;
-			}
+				query.append(StringPool.CLOSE_PARENTHESIS);
 
-			if (conjunctionable) {
 				query.append(WHERE_AND);
 			}
 
+			boolean bindCode = false;
+
 			if (code == null) {
-				query.append(_FINDER_COLUMN_G_C_CODE_4);
+				query.append(_FINDER_COLUMN_G_C_CODE_1);
 			}
 			else if (code.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_C_CODE_6);
+				query.append(_FINDER_COLUMN_G_C_CODE_3);
 			}
 			else {
-				query.append(_FINDER_COLUMN_G_C_CODE_5);
+				bindCode = true;
+
+				query.append(_FINDER_COLUMN_G_C_CODE_2);
 			}
 
-			conjunctionable = true;
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
 
 			if (orderByComparator != null) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
@@ -4240,11 +4341,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (groupIds != null) {
-					qPos.add(groupIds);
-				}
-
-				if (code != null) {
+				if (bindCode) {
 					qPos.add(code);
 				}
 
@@ -4287,6 +4384,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param code the code
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByG_C(long groupId, String code)
 		throws SystemException {
 		for (CalendarResource calendarResource : findByG_C(groupId, code,
@@ -4303,6 +4401,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_C(long groupId, String code) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_C;
 
@@ -4374,8 +4473,16 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_C(long[] groupIds, String code)
 		throws SystemException {
+		if (groupIds == null) {
+			groupIds = new long[0];
+		}
+		else {
+			groupIds = ArrayUtil.unique(groupIds);
+		}
+
 		Object[] finderArgs = new Object[] { StringUtil.merge(groupIds), code };
 
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_C,
@@ -4386,43 +4493,36 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 			query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
 
-			boolean conjunctionable = false;
-
-			if ((groupIds == null) || (groupIds.length > 0)) {
-				if (conjunctionable) {
-					query.append(WHERE_AND);
-				}
-
+			if (groupIds.length > 0) {
 				query.append(StringPool.OPEN_PARENTHESIS);
 
-				for (int i = 0; i < groupIds.length; i++) {
-					query.append(_FINDER_COLUMN_G_C_GROUPID_5);
+				query.append(_FINDER_COLUMN_G_C_GROUPID_7);
 
-					if ((i + 1) < groupIds.length) {
-						query.append(WHERE_OR);
-					}
-				}
+				query.append(StringUtil.merge(groupIds));
 
 				query.append(StringPool.CLOSE_PARENTHESIS);
 
-				conjunctionable = true;
-			}
+				query.append(StringPool.CLOSE_PARENTHESIS);
 
-			if (conjunctionable) {
 				query.append(WHERE_AND);
 			}
 
+			boolean bindCode = false;
+
 			if (code == null) {
-				query.append(_FINDER_COLUMN_G_C_CODE_4);
+				query.append(_FINDER_COLUMN_G_C_CODE_1);
 			}
 			else if (code.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_C_CODE_6);
+				query.append(_FINDER_COLUMN_G_C_CODE_3);
 			}
 			else {
-				query.append(_FINDER_COLUMN_G_C_CODE_5);
+				bindCode = true;
+
+				query.append(_FINDER_COLUMN_G_C_CODE_2);
 			}
 
-			conjunctionable = true;
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
 
 			String sql = query.toString();
 
@@ -4435,11 +4535,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (groupIds != null) {
-					qPos.add(groupIds);
-				}
-
-				if (code != null) {
+				if (bindCode) {
 					qPos.add(code);
 				}
 
@@ -4470,6 +4566,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByG_C(long groupId, String code)
 		throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
@@ -4536,53 +4633,54 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByG_C(long[] groupIds, String code)
 		throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
 			return countByG_C(groupIds, code);
 		}
 
+		if (groupIds == null) {
+			groupIds = new long[0];
+		}
+		else {
+			groupIds = ArrayUtil.unique(groupIds);
+		}
+
 		StringBundler query = new StringBundler();
 
 		query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
 
-		boolean conjunctionable = false;
-
-		if ((groupIds == null) || (groupIds.length > 0)) {
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
+		if (groupIds.length > 0) {
 			query.append(StringPool.OPEN_PARENTHESIS);
 
-			for (int i = 0; i < groupIds.length; i++) {
-				query.append(_FINDER_COLUMN_G_C_GROUPID_5);
+			query.append(_FINDER_COLUMN_G_C_GROUPID_7);
 
-				if ((i + 1) < groupIds.length) {
-					query.append(WHERE_OR);
-				}
-			}
+			query.append(StringUtil.merge(groupIds));
 
 			query.append(StringPool.CLOSE_PARENTHESIS);
 
-			conjunctionable = true;
-		}
+			query.append(StringPool.CLOSE_PARENTHESIS);
 
-		if (conjunctionable) {
 			query.append(WHERE_AND);
 		}
 
+		boolean bindCode = false;
+
 		if (code == null) {
-			query.append(_FINDER_COLUMN_G_C_CODE_4);
+			query.append(_FINDER_COLUMN_G_C_CODE_1);
 		}
 		else if (code.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_C_CODE_6);
+			query.append(_FINDER_COLUMN_G_C_CODE_3);
 		}
 		else {
-			query.append(_FINDER_COLUMN_G_C_CODE_5);
+			bindCode = true;
+
+			query.append(_FINDER_COLUMN_G_C_CODE_2);
 		}
 
-		conjunctionable = true;
+		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
+			query.index() - 1);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
 				CalendarResource.class.getName(),
@@ -4598,11 +4696,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (groupIds != null) {
-				qPos.add(groupIds);
-			}
-
-			if (code != null) {
+			if (bindCode) {
 				qPos.add(code);
 			}
 
@@ -4619,17 +4713,10 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	}
 
 	private static final String _FINDER_COLUMN_G_C_GROUPID_2 = "calendarResource.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_G_C_GROUPID_5 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_C_GROUPID_2) + ")";
+	private static final String _FINDER_COLUMN_G_C_GROUPID_7 = "calendarResource.groupId IN (";
 	private static final String _FINDER_COLUMN_G_C_CODE_1 = "calendarResource.code IS NULL";
 	private static final String _FINDER_COLUMN_G_C_CODE_2 = "calendarResource.code = ?";
 	private static final String _FINDER_COLUMN_G_C_CODE_3 = "(calendarResource.code IS NULL OR calendarResource.code = '')";
-	private static final String _FINDER_COLUMN_G_C_CODE_4 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_C_CODE_1) + ")";
-	private static final String _FINDER_COLUMN_G_C_CODE_5 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_C_CODE_2) + ")";
-	private static final String _FINDER_COLUMN_G_C_CODE_6 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_C_CODE_3) + ")";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarResourceModelImpl.FINDER_CACHE_ENABLED,
 			CalendarResourceImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
@@ -4661,6 +4748,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_A(long groupId, boolean active)
 		throws SystemException {
 		return findByG_A(groupId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -4681,6 +4769,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_A(long groupId, boolean active,
 		int start, int end) throws SystemException {
 		return findByG_A(groupId, active, start, end, null);
@@ -4701,6 +4790,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByG_A(long groupId, boolean active,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -4818,6 +4908,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByG_A_First(long groupId, boolean active,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -4852,6 +4943,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByG_A_First(long groupId, boolean active,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<CalendarResource> list = findByG_A(groupId, active, 0, 1,
@@ -4874,6 +4966,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByG_A_Last(long groupId, boolean active,
 		OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -4908,9 +5001,14 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByG_A_Last(long groupId, boolean active,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByG_A(groupId, active);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByG_A(groupId, active, count - 1,
 				count, orderByComparator);
@@ -4933,6 +5031,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByG_A_PrevAndNext(long calendarResourceId,
 		long groupId, boolean active, OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -5080,6 +5179,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_A(long groupId, boolean active)
 		throws SystemException {
 		return filterFindByG_A(groupId, active, QueryUtil.ALL_POS,
@@ -5100,6 +5200,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_A(long groupId, boolean active,
 		int start, int end) throws SystemException {
 		return filterFindByG_A(groupId, active, start, end, null);
@@ -5120,6 +5221,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> filterFindByG_A(long groupId, boolean active,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -5191,6 +5293,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] filterFindByG_A_PrevAndNext(
 		long calendarResourceId, long groupId, boolean active,
 		OrderByComparator orderByComparator)
@@ -5346,6 +5449,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param active the active
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByG_A(long groupId, boolean active)
 		throws SystemException {
 		for (CalendarResource calendarResource : findByG_A(groupId, active,
@@ -5362,6 +5466,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_A(long groupId, boolean active)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_A;
@@ -5420,6 +5525,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByG_A(long groupId, boolean active)
 		throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
@@ -5486,6 +5592,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByC_C(long classNameId, long classPK)
 		throws NoSuchResourceException, SystemException {
 		CalendarResource calendarResource = fetchByC_C(classNameId, classPK);
@@ -5521,6 +5628,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByC_C(long classNameId, long classPK)
 		throws SystemException {
 		return fetchByC_C(classNameId, classPK, true);
@@ -5535,6 +5643,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByC_C(long classNameId, long classPK,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { classNameId, classPK };
@@ -5626,6 +5735,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the calendar resource that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource removeByC_C(long classNameId, long classPK)
 		throws NoSuchResourceException, SystemException {
 		CalendarResource calendarResource = findByC_C(classNameId, classPK);
@@ -5641,6 +5751,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_C(long classNameId, long classPK)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_C;
@@ -5693,1547 +5804,6 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 	private static final String _FINDER_COLUMN_C_C_CLASSNAMEID_2 = "calendarResource.classNameId = ? AND ";
 	private static final String _FINDER_COLUMN_C_C_CLASSPK_2 = "calendarResource.classPK = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_N_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
-			CalendarResourceModelImpl.FINDER_CACHE_ENABLED,
-			CalendarResourceImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findByG_N_A",
-			new String[] {
-				Long.class.getName(), String.class.getName(),
-				Boolean.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_N_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
-			CalendarResourceModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_N_A",
-			new String[] {
-				Long.class.getName(), String.class.getName(),
-				Boolean.class.getName()
-			});
-
-	/**
-	 * Returns all the calendar resources where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long groupId, String name,
-		boolean active) throws SystemException {
-		return findByG_N_A(groupId, name, active, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the calendar resources where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @return the range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long groupId, String name,
-		boolean active, int start, int end) throws SystemException {
-		return findByG_N_A(groupId, name, active, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the calendar resources where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long groupId, String name,
-		boolean active, int start, int end, OrderByComparator orderByComparator)
-		throws SystemException {
-		boolean pagination = true;
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_N_A;
-		finderArgs = new Object[] {
-				groupId, name, active,
-				
-				start, end, orderByComparator
-			};
-
-		List<CalendarResource> list = (List<CalendarResource>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (CalendarResource calendarResource : list) {
-				if ((groupId != calendarResource.getGroupId()) ||
-						!Validator.equals(name, calendarResource.getName()) ||
-						(active != calendarResource.getActive())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = null;
-
-			if (orderByComparator != null) {
-				query = new StringBundler(5 +
-						(orderByComparator.getOrderByFields().length * 3));
-			}
-			else {
-				query = new StringBundler(5);
-			}
-
-			query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-			query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-			boolean bindName = false;
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-			}
-			else {
-				bindName = true;
-
-				query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-			}
-
-			query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-			else
-			 if (pagination) {
-				query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(groupId);
-
-				if (bindName) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				if (!pagination) {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end, false);
-
-					Collections.sort(list);
-
-					list = new UnmodifiableList<CalendarResource>(list);
-				}
-				else {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end);
-				}
-
-				cacheResult(list);
-
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first calendar resource in the ordered set where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource findByG_N_A_First(long groupId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = fetchByG_N_A_First(groupId, name,
-				active, orderByComparator);
-
-		if (calendarResource != null) {
-			return calendarResource;
-		}
-
-		StringBundler msg = new StringBundler(8);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("groupId=");
-		msg.append(groupId);
-
-		msg.append(", name=");
-		msg.append(name);
-
-		msg.append(", active=");
-		msg.append(active);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchResourceException(msg.toString());
-	}
-
-	/**
-	 * Returns the first calendar resource in the ordered set where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource fetchByG_N_A_First(long groupId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws SystemException {
-		List<CalendarResource> list = findByG_N_A(groupId, name, active, 0, 1,
-				orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last calendar resource in the ordered set where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource findByG_N_A_Last(long groupId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = fetchByG_N_A_Last(groupId, name,
-				active, orderByComparator);
-
-		if (calendarResource != null) {
-			return calendarResource;
-		}
-
-		StringBundler msg = new StringBundler(8);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("groupId=");
-		msg.append(groupId);
-
-		msg.append(", name=");
-		msg.append(name);
-
-		msg.append(", active=");
-		msg.append(active);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchResourceException(msg.toString());
-	}
-
-	/**
-	 * Returns the last calendar resource in the ordered set where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource fetchByG_N_A_Last(long groupId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws SystemException {
-		int count = countByG_N_A(groupId, name, active);
-
-		List<CalendarResource> list = findByG_N_A(groupId, name, active,
-				count - 1, count, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the calendar resources before and after the current calendar resource in the ordered set where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param calendarResourceId the primary key of the current calendar resource
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource[] findByG_N_A_PrevAndNext(long calendarResourceId,
-		long groupId, String name, boolean active,
-		OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = findByPrimaryKey(calendarResourceId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			CalendarResource[] array = new CalendarResourceImpl[3];
-
-			array[0] = getByG_N_A_PrevAndNext(session, calendarResource,
-					groupId, name, active, orderByComparator, true);
-
-			array[1] = calendarResource;
-
-			array[2] = getByG_N_A_PrevAndNext(session, calendarResource,
-					groupId, name, active, orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected CalendarResource getByG_N_A_PrevAndNext(Session session,
-		CalendarResource calendarResource, long groupId, String name,
-		boolean active, OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-		query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-		boolean bindName = false;
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-		}
-		else {
-			bindName = true;
-
-			query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-		else {
-			query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = query.toString();
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(groupId);
-
-		if (bindName) {
-			qPos.add(name);
-		}
-
-		qPos.add(active);
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(calendarResource);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<CalendarResource> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all the calendar resources that the user has permission to view where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long groupId, String name,
-		boolean active) throws SystemException {
-		return filterFindByG_N_A(groupId, name, active, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the calendar resources that the user has permission to view where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @return the range of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long groupId, String name,
-		boolean active, int start, int end) throws SystemException {
-		return filterFindByG_N_A(groupId, name, active, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the calendar resources that the user has permissions to view where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long groupId, String name,
-		boolean active, int start, int end, OrderByComparator orderByComparator)
-		throws SystemException {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_N_A(groupId, name, active, start, end,
-				orderByComparator);
-		}
-
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(5 +
-					(orderByComparator.getOrderByFields().length * 3));
-		}
-		else {
-			query = new StringBundler(5);
-		}
-
-		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-		query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-		boolean bindName = false;
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-		}
-		else {
-			bindName = true;
-
-			query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-		if (orderByComparator != null) {
-			appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-				orderByComparator);
-		}
-		else {
-			query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				CalendarResource.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query q = session.createQuery(sql);
-
-			QueryPos qPos = QueryPos.getInstance(q);
-
-			qPos.add(groupId);
-
-			if (bindName) {
-				qPos.add(name);
-			}
-
-			qPos.add(active);
-
-			return (List<CalendarResource>)QueryUtil.list(q, getDialect(),
-				start, end);
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	/**
-	 * Returns the calendar resources before and after the current calendar resource in the ordered set of calendar resources that the user has permission to view where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param calendarResourceId the primary key of the current calendar resource
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource[] filterFindByG_N_A_PrevAndNext(
-		long calendarResourceId, long groupId, String name, boolean active,
-		OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_N_A_PrevAndNext(calendarResourceId, groupId, name,
-				active, orderByComparator);
-		}
-
-		CalendarResource calendarResource = findByPrimaryKey(calendarResourceId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			CalendarResource[] array = new CalendarResourceImpl[3];
-
-			array[0] = filterGetByG_N_A_PrevAndNext(session, calendarResource,
-					groupId, name, active, orderByComparator, true);
-
-			array[1] = calendarResource;
-
-			array[2] = filterGetByG_N_A_PrevAndNext(session, calendarResource,
-					groupId, name, active, orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected CalendarResource filterGetByG_N_A_PrevAndNext(Session session,
-		CalendarResource calendarResource, long groupId, String name,
-		boolean active, OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-		query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-		boolean bindName = false;
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-		}
-		else {
-			bindName = true;
-
-			query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-		else {
-			query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				CalendarResource.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(groupId);
-
-		if (bindName) {
-			qPos.add(name);
-		}
-
-		qPos.add(active);
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(calendarResource);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<CalendarResource> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all the calendar resources that the user has permission to view where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long[] groupIds,
-		String name, boolean active) throws SystemException {
-		return filterFindByG_N_A(groupIds, name, active, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the calendar resources that the user has permission to view where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @return the range of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long[] groupIds,
-		String name, boolean active, int start, int end)
-		throws SystemException {
-		return filterFindByG_N_A(groupIds, name, active, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the calendar resources that the user has permission to view where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> filterFindByG_N_A(long[] groupIds,
-		String name, boolean active, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_N_A(groupIds, name, active, start, end,
-				orderByComparator);
-		}
-
-		StringBundler query = new StringBundler();
-
-		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-		boolean conjunctionable = false;
-
-		if ((groupIds == null) || (groupIds.length > 0)) {
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			query.append(StringPool.OPEN_PARENTHESIS);
-
-			for (int i = 0; i < groupIds.length; i++) {
-				query.append(_FINDER_COLUMN_G_N_A_GROUPID_5);
-
-				if ((i + 1) < groupIds.length) {
-					query.append(WHERE_OR);
-				}
-			}
-
-			query.append(StringPool.CLOSE_PARENTHESIS);
-
-			conjunctionable = true;
-		}
-
-		if (conjunctionable) {
-			query.append(WHERE_AND);
-		}
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_4);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_6);
-		}
-		else {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_5);
-		}
-
-		conjunctionable = true;
-
-		if (conjunctionable) {
-			query.append(WHERE_AND);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_5);
-
-		conjunctionable = true;
-
-		if (orderByComparator != null) {
-			appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-				orderByComparator);
-		}
-		else {
-			query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				CalendarResource.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupIds);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query q = session.createQuery(sql);
-
-			QueryPos qPos = QueryPos.getInstance(q);
-
-			if (groupIds != null) {
-				qPos.add(groupIds);
-			}
-
-			if (name != null) {
-				qPos.add(name);
-			}
-
-			qPos.add(active);
-
-			return (List<CalendarResource>)QueryUtil.list(q, getDialect(),
-				start, end);
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	/**
-	 * Returns all the calendar resources where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long[] groupIds, String name,
-		boolean active) throws SystemException {
-		return findByG_N_A(groupIds, name, active, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the calendar resources where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @return the range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long[] groupIds, String name,
-		boolean active, int start, int end) throws SystemException {
-		return findByG_N_A(groupIds, name, active, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the calendar resources where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByG_N_A(long[] groupIds, String name,
-		boolean active, int start, int end, OrderByComparator orderByComparator)
-		throws SystemException {
-		if ((groupIds != null) && (groupIds.length == 1)) {
-			return findByG_N_A(groupIds[0], name, active, start, end,
-				orderByComparator);
-		}
-
-		boolean pagination = true;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			pagination = false;
-			finderArgs = new Object[] { StringUtil.merge(groupIds), name, active };
-		}
-		else {
-			finderArgs = new Object[] {
-					StringUtil.merge(groupIds), name, active,
-					
-					start, end, orderByComparator
-				};
-		}
-
-		List<CalendarResource> list = (List<CalendarResource>)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_N_A,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (CalendarResource calendarResource : list) {
-				if (!ArrayUtil.contains(groupIds, calendarResource.getGroupId()) ||
-						!Validator.equals(name, calendarResource.getName()) ||
-						(active != calendarResource.getActive())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = new StringBundler();
-
-			query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-			boolean conjunctionable = false;
-
-			if ((groupIds == null) || (groupIds.length > 0)) {
-				if (conjunctionable) {
-					query.append(WHERE_AND);
-				}
-
-				query.append(StringPool.OPEN_PARENTHESIS);
-
-				for (int i = 0; i < groupIds.length; i++) {
-					query.append(_FINDER_COLUMN_G_N_A_GROUPID_5);
-
-					if ((i + 1) < groupIds.length) {
-						query.append(WHERE_OR);
-					}
-				}
-
-				query.append(StringPool.CLOSE_PARENTHESIS);
-
-				conjunctionable = true;
-			}
-
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_4);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_6);
-			}
-			else {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_5);
-			}
-
-			conjunctionable = true;
-
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			query.append(_FINDER_COLUMN_G_N_A_ACTIVE_5);
-
-			conjunctionable = true;
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-			else
-			 if (pagination) {
-				query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (groupIds != null) {
-					qPos.add(groupIds);
-				}
-
-				if (name != null) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				if (!pagination) {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end, false);
-
-					Collections.sort(list);
-
-					list = new UnmodifiableList<CalendarResource>(list);
-				}
-				else {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end);
-				}
-
-				cacheResult(list);
-
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_N_A,
-					finderArgs, list);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_N_A,
-					finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Removes all the calendar resources where groupId = &#63; and name LIKE &#63; and active = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByG_N_A(long groupId, String name, boolean active)
-		throws SystemException {
-		for (CalendarResource calendarResource : findByG_N_A(groupId, name,
-				active, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-			remove(calendarResource);
-		}
-	}
-
-	/**
-	 * Returns the number of calendar resources where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByG_N_A(long groupId, String name, boolean active)
-		throws SystemException {
-		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_N_A;
-
-		Object[] finderArgs = new Object[] { groupId, name, active };
-
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(4);
-
-			query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
-
-			query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-			boolean bindName = false;
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-			}
-			else {
-				bindName = true;
-
-				query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-			}
-
-			query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(groupId);
-
-				if (bindName) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				count = (Long)q.uniqueResult();
-
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of calendar resources where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByG_N_A(long[] groupIds, String name, boolean active)
-		throws SystemException {
-		Object[] finderArgs = new Object[] {
-				StringUtil.merge(groupIds), name, active
-			};
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_N_A,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler();
-
-			query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
-
-			boolean conjunctionable = false;
-
-			if ((groupIds == null) || (groupIds.length > 0)) {
-				if (conjunctionable) {
-					query.append(WHERE_AND);
-				}
-
-				query.append(StringPool.OPEN_PARENTHESIS);
-
-				for (int i = 0; i < groupIds.length; i++) {
-					query.append(_FINDER_COLUMN_G_N_A_GROUPID_5);
-
-					if ((i + 1) < groupIds.length) {
-						query.append(WHERE_OR);
-					}
-				}
-
-				query.append(StringPool.CLOSE_PARENTHESIS);
-
-				conjunctionable = true;
-			}
-
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_4);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_6);
-			}
-			else {
-				query.append(_FINDER_COLUMN_G_N_A_NAME_5);
-			}
-
-			conjunctionable = true;
-
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			query.append(_FINDER_COLUMN_G_N_A_ACTIVE_5);
-
-			conjunctionable = true;
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (groupIds != null) {
-					qPos.add(groupIds);
-				}
-
-				if (name != null) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				count = (Long)q.uniqueResult();
-
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_N_A,
-					finderArgs, count);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_N_A,
-					finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of calendar resources that the user has permission to view where groupId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int filterCountByG_N_A(long groupId, String name, boolean active)
-		throws SystemException {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return countByG_N_A(groupId, name, active);
-		}
-
-		StringBundler query = new StringBundler(4);
-
-		query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
-
-		query.append(_FINDER_COLUMN_G_N_A_GROUPID_2);
-
-		boolean bindName = false;
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_1);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_3);
-		}
-		else {
-			bindName = true;
-
-			query.append(_FINDER_COLUMN_G_N_A_NAME_2);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_2);
-
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				CalendarResource.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query q = session.createQuery(sql);
-
-			QueryPos qPos = QueryPos.getInstance(q);
-
-			qPos.add(groupId);
-
-			if (bindName) {
-				qPos.add(name);
-			}
-
-			qPos.add(active);
-
-			Long count = (Long)q.uniqueResult();
-
-			return count.intValue();
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	/**
-	 * Returns the number of calendar resources that the user has permission to view where groupId = any &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching calendar resources that the user has permission to view
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int filterCountByG_N_A(long[] groupIds, String name, boolean active)
-		throws SystemException {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return countByG_N_A(groupIds, name, active);
-		}
-
-		StringBundler query = new StringBundler();
-
-		query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
-
-		boolean conjunctionable = false;
-
-		if ((groupIds == null) || (groupIds.length > 0)) {
-			if (conjunctionable) {
-				query.append(WHERE_AND);
-			}
-
-			query.append(StringPool.OPEN_PARENTHESIS);
-
-			for (int i = 0; i < groupIds.length; i++) {
-				query.append(_FINDER_COLUMN_G_N_A_GROUPID_5);
-
-				if ((i + 1) < groupIds.length) {
-					query.append(WHERE_OR);
-				}
-			}
-
-			query.append(StringPool.CLOSE_PARENTHESIS);
-
-			conjunctionable = true;
-		}
-
-		if (conjunctionable) {
-			query.append(WHERE_AND);
-		}
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_4);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_6);
-		}
-		else {
-			query.append(_FINDER_COLUMN_G_N_A_NAME_5);
-		}
-
-		conjunctionable = true;
-
-		if (conjunctionable) {
-			query.append(WHERE_AND);
-		}
-
-		query.append(_FINDER_COLUMN_G_N_A_ACTIVE_5);
-
-		conjunctionable = true;
-
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				CalendarResource.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupIds);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query q = session.createQuery(sql);
-
-			QueryPos qPos = QueryPos.getInstance(q);
-
-			if (groupIds != null) {
-				qPos.add(groupIds);
-			}
-
-			if (name != null) {
-				qPos.add(name);
-			}
-
-			qPos.add(active);
-
-			Long count = (Long)q.uniqueResult();
-
-			return count.intValue();
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	private static final String _FINDER_COLUMN_G_N_A_GROUPID_2 = "calendarResource.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_G_N_A_GROUPID_5 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_N_A_GROUPID_2) + ")";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_1 = "calendarResource.name LIKE NULL AND ";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_2 = "calendarResource.name LIKE ? AND ";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_3 = "(calendarResource.name IS NULL OR calendarResource.name LIKE '') AND ";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_4 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_N_A_NAME_1) + ")";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_5 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_N_A_NAME_2) + ")";
-	private static final String _FINDER_COLUMN_G_N_A_NAME_6 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_N_A_NAME_3) + ")";
-	private static final String _FINDER_COLUMN_G_N_A_ACTIVE_2 = "calendarResource.active = ?";
-	private static final String _FINDER_COLUMN_G_N_A_ACTIVE_5 = "(" +
-		removeConjunction(_FINDER_COLUMN_G_N_A_ACTIVE_2) + ")";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_C_C_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarResourceModelImpl.FINDER_CACHE_ENABLED,
 			CalendarResourceImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
@@ -7262,6 +5832,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByC_C_A(long companyId, String code,
 		boolean active) throws SystemException {
 		return findByC_C_A(companyId, code, active, QueryUtil.ALL_POS,
@@ -7283,6 +5854,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByC_C_A(long companyId, String code,
 		boolean active, int start, int end) throws SystemException {
 		return findByC_C_A(companyId, code, active, start, end, null);
@@ -7304,6 +5876,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findByC_C_A(long companyId, String code,
 		boolean active, int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -7324,7 +5897,10 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 		if ((list != null) && !list.isEmpty()) {
 			for (CalendarResource calendarResource : list) {
 				if ((companyId != calendarResource.getCompanyId()) ||
-						!Validator.equals(code, calendarResource.getCode()) ||
+						!StringUtil.wildcardMatches(
+							calendarResource.getCode(), code,
+							CharPool.UNDERLINE, CharPool.PERCENT,
+							CharPool.BACK_SLASH, true) ||
 						(active != calendarResource.getActive())) {
 					list = null;
 
@@ -7433,6 +6009,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByC_C_A_First(long companyId, String code,
 		boolean active, OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -7471,6 +6048,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByC_C_A_First(long companyId, String code,
 		boolean active, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -7495,6 +6073,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByC_C_A_Last(long companyId, String code,
 		boolean active, OrderByComparator orderByComparator)
 		throws NoSuchResourceException, SystemException {
@@ -7533,10 +6112,15 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByC_C_A_Last(long companyId, String code,
 		boolean active, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByC_C_A(companyId, code, active);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<CalendarResource> list = findByC_C_A(companyId, code, active,
 				count - 1, count, orderByComparator);
@@ -7560,6 +6144,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource[] findByC_C_A_PrevAndNext(long calendarResourceId,
 		long companyId, String code, boolean active,
 		OrderByComparator orderByComparator)
@@ -7726,6 +6311,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param active the active
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_C_A(long companyId, String code, boolean active)
 		throws SystemException {
 		for (CalendarResource calendarResource : findByC_C_A(companyId, code,
@@ -7743,6 +6329,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of matching calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_C_A(long companyId, String code, boolean active)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_C_C_A;
@@ -7816,594 +6403,17 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	private static final String _FINDER_COLUMN_C_C_A_CODE_2 = "calendarResource.code LIKE ? AND ";
 	private static final String _FINDER_COLUMN_C_C_A_CODE_3 = "(calendarResource.code IS NULL OR calendarResource.code LIKE '') AND ";
 	private static final String _FINDER_COLUMN_C_C_A_ACTIVE_2 = "calendarResource.active = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_C_N_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
-			CalendarResourceModelImpl.FINDER_CACHE_ENABLED,
-			CalendarResourceImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findByC_N_A",
-			new String[] {
-				Long.class.getName(), String.class.getName(),
-				Boolean.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_C_N_A = new FinderPath(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
-			CalendarResourceModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_N_A",
-			new String[] {
-				Long.class.getName(), String.class.getName(),
-				Boolean.class.getName()
-			});
 
-	/**
-	 * Returns all the calendar resources where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByC_N_A(long companyId, String name,
-		boolean active) throws SystemException {
-		return findByC_N_A(companyId, name, active, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+	public CalendarResourcePersistenceImpl() {
+		setModelClass(CalendarResource.class);
 	}
-
-	/**
-	 * Returns a range of all the calendar resources where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @return the range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByC_N_A(long companyId, String name,
-		boolean active, int start, int end) throws SystemException {
-		return findByC_N_A(companyId, name, active, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the calendar resources where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param start the lower bound of the range of calendar resources
-	 * @param end the upper bound of the range of calendar resources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<CalendarResource> findByC_N_A(long companyId, String name,
-		boolean active, int start, int end, OrderByComparator orderByComparator)
-		throws SystemException {
-		boolean pagination = true;
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_C_N_A;
-		finderArgs = new Object[] {
-				companyId, name, active,
-				
-				start, end, orderByComparator
-			};
-
-		List<CalendarResource> list = (List<CalendarResource>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (CalendarResource calendarResource : list) {
-				if ((companyId != calendarResource.getCompanyId()) ||
-						!Validator.equals(name, calendarResource.getName()) ||
-						(active != calendarResource.getActive())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = null;
-
-			if (orderByComparator != null) {
-				query = new StringBundler(5 +
-						(orderByComparator.getOrderByFields().length * 3));
-			}
-			else {
-				query = new StringBundler(5);
-			}
-
-			query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-			query.append(_FINDER_COLUMN_C_N_A_COMPANYID_2);
-
-			boolean bindName = false;
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_C_N_A_NAME_1);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_C_N_A_NAME_3);
-			}
-			else {
-				bindName = true;
-
-				query.append(_FINDER_COLUMN_C_N_A_NAME_2);
-			}
-
-			query.append(_FINDER_COLUMN_C_N_A_ACTIVE_2);
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-			else
-			 if (pagination) {
-				query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(companyId);
-
-				if (bindName) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				if (!pagination) {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end, false);
-
-					Collections.sort(list);
-
-					list = new UnmodifiableList<CalendarResource>(list);
-				}
-				else {
-					list = (List<CalendarResource>)QueryUtil.list(q,
-							getDialect(), start, end);
-				}
-
-				cacheResult(list);
-
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first calendar resource in the ordered set where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource findByC_N_A_First(long companyId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = fetchByC_N_A_First(companyId, name,
-				active, orderByComparator);
-
-		if (calendarResource != null) {
-			return calendarResource;
-		}
-
-		StringBundler msg = new StringBundler(8);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("companyId=");
-		msg.append(companyId);
-
-		msg.append(", name=");
-		msg.append(name);
-
-		msg.append(", active=");
-		msg.append(active);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchResourceException(msg.toString());
-	}
-
-	/**
-	 * Returns the first calendar resource in the ordered set where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource fetchByC_N_A_First(long companyId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws SystemException {
-		List<CalendarResource> list = findByC_N_A(companyId, name, active, 0,
-				1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last calendar resource in the ordered set where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource findByC_N_A_Last(long companyId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = fetchByC_N_A_Last(companyId, name,
-				active, orderByComparator);
-
-		if (calendarResource != null) {
-			return calendarResource;
-		}
-
-		StringBundler msg = new StringBundler(8);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("companyId=");
-		msg.append(companyId);
-
-		msg.append(", name=");
-		msg.append(name);
-
-		msg.append(", active=");
-		msg.append(active);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchResourceException(msg.toString());
-	}
-
-	/**
-	 * Returns the last calendar resource in the ordered set where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource fetchByC_N_A_Last(long companyId, String name,
-		boolean active, OrderByComparator orderByComparator)
-		throws SystemException {
-		int count = countByC_N_A(companyId, name, active);
-
-		List<CalendarResource> list = findByC_N_A(companyId, name, active,
-				count - 1, count, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the calendar resources before and after the current calendar resource in the ordered set where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param calendarResourceId the primary key of the current calendar resource
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next calendar resource
-	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public CalendarResource[] findByC_N_A_PrevAndNext(long calendarResourceId,
-		long companyId, String name, boolean active,
-		OrderByComparator orderByComparator)
-		throws NoSuchResourceException, SystemException {
-		CalendarResource calendarResource = findByPrimaryKey(calendarResourceId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			CalendarResource[] array = new CalendarResourceImpl[3];
-
-			array[0] = getByC_N_A_PrevAndNext(session, calendarResource,
-					companyId, name, active, orderByComparator, true);
-
-			array[1] = calendarResource;
-
-			array[2] = getByC_N_A_PrevAndNext(session, calendarResource,
-					companyId, name, active, orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected CalendarResource getByC_N_A_PrevAndNext(Session session,
-		CalendarResource calendarResource, long companyId, String name,
-		boolean active, OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_CALENDARRESOURCE_WHERE);
-
-		query.append(_FINDER_COLUMN_C_N_A_COMPANYID_2);
-
-		boolean bindName = false;
-
-		if (name == null) {
-			query.append(_FINDER_COLUMN_C_N_A_NAME_1);
-		}
-		else if (name.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_C_N_A_NAME_3);
-		}
-		else {
-			bindName = true;
-
-			query.append(_FINDER_COLUMN_C_N_A_NAME_2);
-		}
-
-		query.append(_FINDER_COLUMN_C_N_A_ACTIVE_2);
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-		else {
-			query.append(CalendarResourceModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = query.toString();
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(companyId);
-
-		if (bindName) {
-			qPos.add(name);
-		}
-
-		qPos.add(active);
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(calendarResource);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<CalendarResource> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Removes all the calendar resources where companyId = &#63; and name LIKE &#63; and active = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByC_N_A(long companyId, String name, boolean active)
-		throws SystemException {
-		for (CalendarResource calendarResource : findByC_N_A(companyId, name,
-				active, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-			remove(calendarResource);
-		}
-	}
-
-	/**
-	 * Returns the number of calendar resources where companyId = &#63; and name LIKE &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching calendar resources
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByC_N_A(long companyId, String name, boolean active)
-		throws SystemException {
-		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_C_N_A;
-
-		Object[] finderArgs = new Object[] { companyId, name, active };
-
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(4);
-
-			query.append(_SQL_COUNT_CALENDARRESOURCE_WHERE);
-
-			query.append(_FINDER_COLUMN_C_N_A_COMPANYID_2);
-
-			boolean bindName = false;
-
-			if (name == null) {
-				query.append(_FINDER_COLUMN_C_N_A_NAME_1);
-			}
-			else if (name.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_C_N_A_NAME_3);
-			}
-			else {
-				bindName = true;
-
-				query.append(_FINDER_COLUMN_C_N_A_NAME_2);
-			}
-
-			query.append(_FINDER_COLUMN_C_N_A_ACTIVE_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(companyId);
-
-				if (bindName) {
-					qPos.add(name);
-				}
-
-				qPos.add(active);
-
-				count = (Long)q.uniqueResult();
-
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
-			}
-			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
-
-				throw processException(e);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	private static final String _FINDER_COLUMN_C_N_A_COMPANYID_2 = "calendarResource.companyId = ? AND ";
-	private static final String _FINDER_COLUMN_C_N_A_NAME_1 = "calendarResource.name LIKE NULL AND ";
-	private static final String _FINDER_COLUMN_C_N_A_NAME_2 = "calendarResource.name LIKE ? AND ";
-	private static final String _FINDER_COLUMN_C_N_A_NAME_3 = "(calendarResource.name IS NULL OR calendarResource.name LIKE '') AND ";
-	private static final String _FINDER_COLUMN_C_N_A_ACTIVE_2 = "calendarResource.active = ?";
 
 	/**
 	 * Caches the calendar resource in the entity cache if it is enabled.
 	 *
 	 * @param calendarResource the calendar resource
 	 */
+	@Override
 	public void cacheResult(CalendarResource calendarResource) {
 		EntityCacheUtil.putResult(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarResourceImpl.class, calendarResource.getPrimaryKey(),
@@ -8427,6 +6437,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 *
 	 * @param calendarResources the calendar resources
 	 */
+	@Override
 	public void cacheResult(List<CalendarResource> calendarResources) {
 		for (CalendarResource calendarResource : calendarResources) {
 			if (EntityCacheUtil.getResult(
@@ -8454,7 +6465,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 			CacheRegistryUtil.clear(CalendarResourceImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(CalendarResourceImpl.class.getName());
+		EntityCacheUtil.clearCache(CalendarResourceImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -8590,6 +6601,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @param calendarResourceId the primary key for the new calendar resource
 	 * @return the new calendar resource
 	 */
+	@Override
 	public CalendarResource create(long calendarResourceId) {
 		CalendarResource calendarResource = new CalendarResourceImpl();
 
@@ -8611,6 +6623,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource remove(long calendarResourceId)
 		throws NoSuchResourceException, SystemException {
 		return remove((Serializable)calendarResourceId);
@@ -8872,10 +6885,12 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 
 		EntityCacheUtil.putResult(CalendarResourceModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarResourceImpl.class, calendarResource.getPrimaryKey(),
-			calendarResource);
+			calendarResource, false);
 
 		clearUniqueFindersCache(calendarResource);
 		cacheUniqueFindersCache(calendarResource);
+
+		calendarResource.resetOriginalValues();
 
 		return calendarResource;
 	}
@@ -8944,6 +6959,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @throws com.liferay.calendar.NoSuchResourceException if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource findByPrimaryKey(long calendarResourceId)
 		throws NoSuchResourceException, SystemException {
 		return findByPrimaryKey((Serializable)calendarResourceId);
@@ -9005,6 +7021,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the calendar resource, or <code>null</code> if a calendar resource with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public CalendarResource fetchByPrimaryKey(long calendarResourceId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)calendarResourceId);
@@ -9016,6 +7033,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -9032,6 +7050,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the range of calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -9050,6 +7069,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the ordered range of calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<CalendarResource> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -9135,6 +7155,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (CalendarResource calendarResource : findAll()) {
 			remove(calendarResource);
@@ -9147,6 +7168,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	 * @return the number of calendar resources
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -9176,6 +7198,11 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -9222,6 +7249,9 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(CalendarResourcePersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid", "code", "active"
+			});
 	private static CalendarResource _nullCalendarResource = new CalendarResourceImpl() {
 			@Override
 			public Object clone() {
@@ -9235,6 +7265,7 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 		};
 
 	private static CacheModel<CalendarResource> _nullCalendarResourceCacheModel = new CacheModel<CalendarResource>() {
+			@Override
 			public CalendarResource toEntityModel() {
 				return _nullCalendarResource;
 			}

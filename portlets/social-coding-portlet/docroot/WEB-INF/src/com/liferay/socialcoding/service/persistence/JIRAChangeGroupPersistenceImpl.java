@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -49,6 +50,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the j i r a change group service.
@@ -116,6 +118,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraUserId(String jiraUserId)
 		throws SystemException {
 		return findByJiraUserId(jiraUserId, QueryUtil.ALL_POS,
@@ -135,6 +138,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the range of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraUserId(String jiraUserId, int start,
 		int end) throws SystemException {
 		return findByJiraUserId(jiraUserId, start, end, null);
@@ -154,6 +158,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the ordered range of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraUserId(String jiraUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -275,6 +280,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup findByJiraUserId_First(String jiraUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeGroupException, SystemException {
@@ -305,6 +311,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the first matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup fetchByJiraUserId_First(String jiraUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<JIRAChangeGroup> list = findByJiraUserId(jiraUserId, 0, 1,
@@ -326,6 +333,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup findByJiraUserId_Last(String jiraUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeGroupException, SystemException {
@@ -356,9 +364,14 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the last matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup fetchByJiraUserId_Last(String jiraUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByJiraUserId(jiraUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAChangeGroup> list = findByJiraUserId(jiraUserId, count - 1,
 				count, orderByComparator);
@@ -380,6 +393,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup[] findByJiraUserId_PrevAndNext(
 		long jiraChangeGroupId, String jiraUserId,
 		OrderByComparator orderByComparator)
@@ -536,6 +550,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @param jiraUserId the jira user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByJiraUserId(String jiraUserId) throws SystemException {
 		for (JIRAChangeGroup jiraChangeGroup : findByJiraUserId(jiraUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -550,6 +565,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the number of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByJiraUserId(String jiraUserId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAUSERID;
 
@@ -643,6 +659,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraIssueId(long jiraIssueId)
 		throws SystemException {
 		return findByJiraIssueId(jiraIssueId, QueryUtil.ALL_POS,
@@ -662,6 +679,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the range of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraIssueId(long jiraIssueId, int start,
 		int end) throws SystemException {
 		return findByJiraIssueId(jiraIssueId, start, end, null);
@@ -681,6 +699,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the ordered range of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findByJiraIssueId(long jiraIssueId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -787,6 +806,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup findByJiraIssueId_First(long jiraIssueId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeGroupException, SystemException {
@@ -817,6 +837,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the first matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup fetchByJiraIssueId_First(long jiraIssueId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<JIRAChangeGroup> list = findByJiraIssueId(jiraIssueId, 0, 1,
@@ -838,6 +859,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup findByJiraIssueId_Last(long jiraIssueId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeGroupException, SystemException {
@@ -868,9 +890,14 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the last matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup fetchByJiraIssueId_Last(long jiraIssueId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByJiraIssueId(jiraIssueId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAChangeGroup> list = findByJiraIssueId(jiraIssueId, count - 1,
 				count, orderByComparator);
@@ -892,6 +919,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup[] findByJiraIssueId_PrevAndNext(
 		long jiraChangeGroupId, long jiraIssueId,
 		OrderByComparator orderByComparator)
@@ -1034,6 +1062,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @param jiraIssueId the jira issue ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByJiraIssueId(long jiraIssueId) throws SystemException {
 		for (JIRAChangeGroup jiraChangeGroup : findByJiraIssueId(jiraIssueId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -1048,6 +1077,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the number of matching j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByJiraIssueId(long jiraIssueId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAISSUEID;
 
@@ -1095,11 +1125,16 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 
 	private static final String _FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2 = "jiraChangeGroup.jiraIssueId = ?";
 
+	public JIRAChangeGroupPersistenceImpl() {
+		setModelClass(JIRAChangeGroup.class);
+	}
+
 	/**
 	 * Caches the j i r a change group in the entity cache if it is enabled.
 	 *
 	 * @param jiraChangeGroup the j i r a change group
 	 */
+	@Override
 	public void cacheResult(JIRAChangeGroup jiraChangeGroup) {
 		EntityCacheUtil.putResult(JIRAChangeGroupModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAChangeGroupImpl.class, jiraChangeGroup.getPrimaryKey(),
@@ -1113,6 +1148,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 *
 	 * @param jiraChangeGroups the j i r a change groups
 	 */
+	@Override
 	public void cacheResult(List<JIRAChangeGroup> jiraChangeGroups) {
 		for (JIRAChangeGroup jiraChangeGroup : jiraChangeGroups) {
 			if (EntityCacheUtil.getResult(
@@ -1140,7 +1176,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 			CacheRegistryUtil.clear(JIRAChangeGroupImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(JIRAChangeGroupImpl.class.getName());
+		EntityCacheUtil.clearCache(JIRAChangeGroupImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -1180,6 +1216,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @param jiraChangeGroupId the primary key for the new j i r a change group
 	 * @return the new j i r a change group
 	 */
+	@Override
 	public JIRAChangeGroup create(long jiraChangeGroupId) {
 		JIRAChangeGroup jiraChangeGroup = new JIRAChangeGroupImpl();
 
@@ -1197,6 +1234,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup remove(long jiraChangeGroupId)
 		throws NoSuchJIRAChangeGroupException, SystemException {
 		return remove((Serializable)jiraChangeGroupId);
@@ -1355,7 +1393,9 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 
 		EntityCacheUtil.putResult(JIRAChangeGroupModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAChangeGroupImpl.class, jiraChangeGroup.getPrimaryKey(),
-			jiraChangeGroup);
+			jiraChangeGroup, false);
+
+		jiraChangeGroup.resetOriginalValues();
 
 		return jiraChangeGroup;
 	}
@@ -1411,6 +1451,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup findByPrimaryKey(long jiraChangeGroupId)
 		throws NoSuchJIRAChangeGroupException, SystemException {
 		return findByPrimaryKey((Serializable)jiraChangeGroupId);
@@ -1472,6 +1513,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the j i r a change group, or <code>null</code> if a j i r a change group with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeGroup fetchByPrimaryKey(long jiraChangeGroupId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)jiraChangeGroupId);
@@ -1483,6 +1525,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1499,6 +1542,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the range of j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -1517,6 +1561,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the ordered range of j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeGroup> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1602,6 +1647,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (JIRAChangeGroup jiraChangeGroup : findAll()) {
 			remove(jiraChangeGroup);
@@ -1614,6 +1660,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	 * @return the number of j i r a change groups
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1643,6 +1690,11 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -1687,6 +1739,9 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(JIRAChangeGroupPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"jiraChangeGroupId", "jiraUserId", "createDate", "jiraIssueId"
+			});
 	private static JIRAChangeGroup _nullJIRAChangeGroup = new JIRAChangeGroupImpl() {
 			@Override
 			public Object clone() {
@@ -1700,6 +1755,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 		};
 
 	private static CacheModel<JIRAChangeGroup> _nullJIRAChangeGroupCacheModel = new CacheModel<JIRAChangeGroup>() {
+			@Override
 			public JIRAChangeGroup toEntityModel() {
 				return _nullJIRAChangeGroup;
 			}

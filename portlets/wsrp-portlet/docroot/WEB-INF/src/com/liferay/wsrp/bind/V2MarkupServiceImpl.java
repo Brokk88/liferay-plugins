@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
@@ -216,10 +217,11 @@ public class V2MarkupServiceImpl
 			String name = ExtensionHelperUtil.getNameAttribute(clientAttribute);
 			String value = clientAttribute.getValue();
 
-			if (name.equalsIgnoreCase(HttpHeaders.ACCEPT_ENCODING) ||
-				name.equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH) ||
-				name.equalsIgnoreCase(HttpHeaders.CONTENT_TYPE) ||
-				name.equalsIgnoreCase(HttpHeaders.COOKIE)) {
+			if (StringUtil.equalsIgnoreCase(
+					name, HttpHeaders.ACCEPT_ENCODING) ||
+				StringUtil.equalsIgnoreCase(name, HttpHeaders.CONTENT_LENGTH) ||
+				StringUtil.equalsIgnoreCase(name, HttpHeaders.CONTENT_TYPE) ||
+				StringUtil.equalsIgnoreCase(name, HttpHeaders.COOKIE)) {
 
 				continue;
 			}
@@ -307,7 +309,7 @@ public class V2MarkupServiceImpl
 
 		if (itemBinary != null) {
 			if (Validator.isNotNull(contentType) &&
-				contentType.toLowerCase().startsWith("text")) {
+				StringUtil.toLowerCase(contentType).startsWith("text")) {
 
 				String content = new String(itemBinary);
 
@@ -626,9 +628,11 @@ public class V2MarkupServiceImpl
 			for (Cookie cookie : forwardCookies) {
 				String cookieName = cookie.getName();
 
-				if (!cookieName.equalsIgnoreCase("cookie_support") &&
-					!cookieName.equalsIgnoreCase("guest_language_id") &&
-					!cookieName.equalsIgnoreCase("jsessionid")) {
+				if (!StringUtil.equalsIgnoreCase(
+						cookieName, "cookie_support") &&
+					!StringUtil.equalsIgnoreCase(
+						cookieName, "guest_language_id") &&
+					!StringUtil.equalsIgnoreCase(cookieName, "jsessionid")) {
 
 					if (Validator.isNull(cookie.getDomain())) {
 						cookie.setDomain(request.getServerName());
@@ -809,7 +813,9 @@ public class V2MarkupServiceImpl
 		sb.append(portalURL);
 		sb.append(PortalUtil.getPathContext());
 
-		if (Validator.isNotNull(languageId)) {
+		String[] localesEnabled = PropsUtil.getArray(PropsKeys.LOCALES_ENABLED);
+
+		if (ArrayUtil.contains(localesEnabled, languageId)) {
 			sb.append(StringPool.SLASH);
 			sb.append(languageId);
 		}

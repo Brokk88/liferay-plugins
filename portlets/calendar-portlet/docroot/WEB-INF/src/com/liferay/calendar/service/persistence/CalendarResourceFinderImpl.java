@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -48,6 +49,7 @@ public class CalendarResourceFinderImpl
 	public static final String FIND_BY_C_G_C_C_N_D_A =
 		CalendarResourceFinder.class.getName() + ".findByC_G_C_C_N_D_A";
 
+	@Override
 	public int countByKeywords(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String keywords, boolean active)
@@ -72,6 +74,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds, String code,
 			String name, String description, boolean active,
@@ -87,6 +90,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String[] codes, String[] names, String[] descriptions,
@@ -98,6 +102,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, false);
 	}
 
+	@Override
 	public int filterCountByKeywords(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String keywords, boolean active)
@@ -122,6 +127,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds, String code,
 			String name, String description, boolean active,
@@ -137,6 +143,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String[] codes, String[] names, String[] descriptions,
@@ -148,6 +155,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, true);
 	}
 
+	@Override
 	public List<CalendarResource> filterFindByKeywords(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String keywords, boolean active, int start, int end,
@@ -173,6 +181,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<CalendarResource> filterFindByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds, String code,
 			String name, String description, boolean active,
@@ -189,6 +198,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<CalendarResource> filterFindByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String[] codes, String[] names, String[] descriptions,
@@ -201,6 +211,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, start, end, orderByComparator, true);
 	}
 
+	@Override
 	public List<CalendarResource> findByKeywords(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String keywords, boolean active, int start, int end,
@@ -226,6 +237,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<CalendarResource> findByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds, String code,
 			String name, String description, boolean active,
@@ -242,6 +254,7 @@ public class CalendarResourceFinderImpl
 			active, andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<CalendarResource> findByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String[] codes, String[] names, String[] descriptions,
@@ -289,7 +302,7 @@ public class CalendarResourceFinderImpl
 				sql, "description", StringPool.LIKE, false, descriptions);
 			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
@@ -298,7 +311,7 @@ public class CalendarResourceFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((classNameIds != null) && (classNameIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(classNameIds)) {
 				qPos.add(classNameIds);
 			}
 
@@ -360,7 +373,7 @@ public class CalendarResourceFinderImpl
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "lower(name)", StringPool.LIKE, false, names);
 			sql = CustomSQLUtil.replaceKeywords(
-				sql, "description", StringPool.LIKE, false, descriptions);
+				sql, "description", StringPool.LIKE, true, descriptions);
 			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
 			StringBundler sb = new StringBundler();
@@ -372,7 +385,7 @@ public class CalendarResourceFinderImpl
 
 			sql = StringUtil.replace(sql, "[$ORDER_BY$]", sb.toString());
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("CalendarResource", CalendarResourceImpl.class);
 
@@ -381,7 +394,7 @@ public class CalendarResourceFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((classNameIds != null) && (classNameIds.length > 0)) {
+			if (ArrayUtil.isNotEmpty(classNameIds)) {
 				qPos.add(classNameIds);
 			}
 
@@ -402,7 +415,7 @@ public class CalendarResourceFinderImpl
 	}
 
 	protected String getClassNameIds(long[] classNameIds) {
-		if ((classNameIds == null) || (classNameIds.length == 0)) {
+		if (ArrayUtil.isEmpty(classNameIds)) {
 			return StringPool.BLANK;
 		}
 

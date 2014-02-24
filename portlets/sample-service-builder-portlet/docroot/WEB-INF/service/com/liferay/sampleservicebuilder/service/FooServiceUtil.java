@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableService;
 
 /**
- * The utility for the foo remote service. This utility wraps {@link com.liferay.sampleservicebuilder.service.impl.FooServiceImpl} and is the primary access point for service operations in application layer code running on a remote server.
- *
- * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
- * </p>
+ * Provides the remote service utility for Foo. This utility wraps
+ * {@link com.liferay.sampleservicebuilder.service.impl.FooServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on a remote server. Methods of this service are expected to have security
+ * checks based on the propagated JAAS credentials because this service can be
+ * accessed remotely.
  *
  * @author Brian Wing Shun Chan
  * @see FooService
@@ -68,6 +69,12 @@ public class FooServiceUtil {
 		return getService().getUser(userId);
 	}
 
+	public static java.util.List<com.liferay.portal.model.Group> getUserSitesGroups()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getUserSitesGroups();
+	}
+
 	public static void clearService() {
 		_service = null;
 	}
@@ -93,6 +100,7 @@ public class FooServiceUtil {
 	/**
 	 * @deprecated As of 6.2.0
 	 */
+	@Deprecated
 	public void setService(FooService service) {
 	}
 

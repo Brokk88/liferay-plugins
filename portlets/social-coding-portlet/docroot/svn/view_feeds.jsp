@@ -40,10 +40,10 @@
 	String title = null;
 
 	if (all) {
-		title = LanguageUtil.format(pageContext, "all-commits-on-x", svnURL);
+		title = LanguageUtil.format(pageContext, "all-commits-on-x", svnURL, false);
 	}
 	else {
-		title = LanguageUtil.format(pageContext, "x's-commits-on-x", new Object[] {HtmlUtil.escape(user2.getFullName()), svnURL});
+		title = LanguageUtil.format(pageContext, "x's-commits-on-x", new Object[] {HtmlUtil.escape(user2.getFullName()), svnURL}, false);
 	}
 
 	SyndFeed syndFeed = new SyndFeedImpl();
@@ -87,13 +87,13 @@
 			sb.append("<a href=\"");
 			sb.append(link);
 			sb.append("\"><img border=\"0\" src=\"");
-			sb.append(request.getContextPath());
+			sb.append(PortalUtil.getPathContext(request));
 			sb.append("/icons/svn.png\" />SVN</a><br />");
 
 			sb.append("<a href=\"http://issues.liferay.com/browse/");
 			sb.append(jiraIssue.getKey());
 			sb.append("\"><img border=\"0\" src=\"");
-			sb.append(request.getContextPath());
+			sb.append(PortalUtil.getPathContext(request));
 			sb.append("/icons/jira.png\" />JIRA</a>");
 
 			comments = sb.toString();

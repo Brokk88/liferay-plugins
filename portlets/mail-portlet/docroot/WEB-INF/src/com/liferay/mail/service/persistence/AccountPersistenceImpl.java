@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -49,6 +50,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the account service.
@@ -111,6 +113,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the matching accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findByUserId(long userId) throws SystemException {
 		return findByUserId(userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -128,6 +131,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the range of matching accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findByUserId(long userId, int start, int end)
 		throws SystemException {
 		return findByUserId(userId, start, end, null);
@@ -147,6 +151,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the ordered range of matching accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findByUserId(long userId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -253,6 +258,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account findByUserId_First(long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAccountException, SystemException {
@@ -282,6 +288,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the first matching account, or <code>null</code> if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account fetchByUserId_First(long userId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Account> list = findByUserId(userId, 0, 1, orderByComparator);
@@ -302,6 +309,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account findByUserId_Last(long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAccountException, SystemException {
@@ -331,9 +339,14 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the last matching account, or <code>null</code> if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account fetchByUserId_Last(long userId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUserId(userId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Account> list = findByUserId(userId, count - 1, count,
 				orderByComparator);
@@ -355,6 +368,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a account with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account[] findByUserId_PrevAndNext(long accountId, long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAccountException, SystemException {
@@ -495,6 +509,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @param userId the user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUserId(long userId) throws SystemException {
 		for (Account account : findByUserId(userId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -509,6 +524,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the number of matching accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUserId(long userId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERID;
 
@@ -575,6 +591,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account findByU_A(long userId, String address)
 		throws NoSuchAccountException, SystemException {
 		Account account = fetchByU_A(userId, address);
@@ -610,6 +627,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the matching account, or <code>null</code> if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account fetchByU_A(long userId, String address)
 		throws SystemException {
 		return fetchByU_A(userId, address, true);
@@ -624,6 +642,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the matching account, or <code>null</code> if a matching account could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account fetchByU_A(long userId, String address,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { userId, address };
@@ -737,6 +756,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the account that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account removeByU_A(long userId, String address)
 		throws NoSuchAccountException, SystemException {
 		Account account = findByU_A(userId, address);
@@ -752,6 +772,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the number of matching accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByU_A(long userId, String address)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_U_A;
@@ -821,11 +842,16 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	private static final String _FINDER_COLUMN_U_A_ADDRESS_2 = "account.address = ?";
 	private static final String _FINDER_COLUMN_U_A_ADDRESS_3 = "(account.address IS NULL OR account.address = '')";
 
+	public AccountPersistenceImpl() {
+		setModelClass(Account.class);
+	}
+
 	/**
 	 * Caches the account in the entity cache if it is enabled.
 	 *
 	 * @param account the account
 	 */
+	@Override
 	public void cacheResult(Account account) {
 		EntityCacheUtil.putResult(AccountModelImpl.ENTITY_CACHE_ENABLED,
 			AccountImpl.class, account.getPrimaryKey(), account);
@@ -841,6 +867,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 *
 	 * @param accounts the accounts
 	 */
+	@Override
 	public void cacheResult(List<Account> accounts) {
 		for (Account account : accounts) {
 			if (EntityCacheUtil.getResult(
@@ -867,7 +894,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 			CacheRegistryUtil.clear(AccountImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(AccountImpl.class.getName());
+		EntityCacheUtil.clearCache(AccountImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -958,6 +985,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @param accountId the primary key for the new account
 	 * @return the new account
 	 */
+	@Override
 	public Account create(long accountId) {
 		Account account = new AccountImpl();
 
@@ -975,6 +1003,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a account with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account remove(long accountId)
 		throws NoSuchAccountException, SystemException {
 		return remove((Serializable)accountId);
@@ -1108,10 +1137,12 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 		}
 
 		EntityCacheUtil.putResult(AccountModelImpl.ENTITY_CACHE_ENABLED,
-			AccountImpl.class, account.getPrimaryKey(), account);
+			AccountImpl.class, account.getPrimaryKey(), account, false);
 
 		clearUniqueFindersCache(account);
 		cacheUniqueFindersCache(account);
+
+		account.resetOriginalValues();
 
 		return account;
 	}
@@ -1189,6 +1220,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @throws com.liferay.mail.NoSuchAccountException if a account with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account findByPrimaryKey(long accountId)
 		throws NoSuchAccountException, SystemException {
 		return findByPrimaryKey((Serializable)accountId);
@@ -1248,6 +1280,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the account, or <code>null</code> if a account with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Account fetchByPrimaryKey(long accountId) throws SystemException {
 		return fetchByPrimaryKey((Serializable)accountId);
 	}
@@ -1258,6 +1291,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1274,6 +1308,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the range of accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -1291,6 +1326,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the ordered range of accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Account> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1376,6 +1412,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Account account : findAll()) {
 			remove(account);
@@ -1388,6 +1425,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	 * @return the number of accounts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1417,6 +1455,11 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -1461,6 +1504,9 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(AccountPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"password"
+			});
 	private static Account _nullAccount = new AccountImpl() {
 			@Override
 			public Object clone() {
@@ -1474,6 +1520,7 @@ public class AccountPersistenceImpl extends BasePersistenceImpl<Account>
 		};
 
 	private static CacheModel<Account> _nullAccountCacheModel = new CacheModel<Account>() {
+			@Override
 			public Account toEntityModel() {
 				return _nullAccount;
 			}

@@ -94,26 +94,32 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 	public AttachmentModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _attachmentId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setAttachmentId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _attachmentId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Attachment.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Attachment.class.getName();
 	}
@@ -131,6 +137,9 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		attributes.put("contentPath", getContentPath());
 		attributes.put("fileName", getFileName());
 		attributes.put("size", getSize());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -192,58 +201,72 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		}
 	}
 
+	@Override
 	public long getAttachmentId() {
 		return _attachmentId;
 	}
 
+	@Override
 	public void setAttachmentId(long attachmentId) {
 		_attachmentId = attachmentId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public long getAccountId() {
 		return _accountId;
 	}
 
+	@Override
 	public void setAccountId(long accountId) {
 		_accountId = accountId;
 	}
 
+	@Override
 	public long getFolderId() {
 		return _folderId;
 	}
 
+	@Override
 	public void setFolderId(long folderId) {
 		_folderId = folderId;
 	}
 
+	@Override
 	public long getMessageId() {
 		return _messageId;
 	}
 
+	@Override
 	public void setMessageId(long messageId) {
 		_columnBitmask |= MESSAGEID_COLUMN_BITMASK;
 
@@ -260,6 +283,7 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		return _originalMessageId;
 	}
 
+	@Override
 	public String getContentPath() {
 		if (_contentPath == null) {
 			return StringPool.BLANK;
@@ -269,10 +293,12 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		}
 	}
 
+	@Override
 	public void setContentPath(String contentPath) {
 		_contentPath = contentPath;
 	}
 
+	@Override
 	public String getFileName() {
 		if (_fileName == null) {
 			return StringPool.BLANK;
@@ -282,14 +308,17 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		}
 	}
 
+	@Override
 	public void setFileName(String fileName) {
 		_fileName = fileName;
 	}
 
+	@Override
 	public long getSize() {
 		return _size;
 	}
 
+	@Override
 	public void setSize(long size) {
 		_size = size;
 	}
@@ -340,6 +369,7 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		return attachmentImpl;
 	}
 
+	@Override
 	public int compareTo(Attachment attachment) {
 		long primaryKey = attachment.getPrimaryKey();
 
@@ -356,18 +386,15 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Attachment)) {
 			return false;
 		}
 
-		Attachment attachment = null;
-
-		try {
-			attachment = (Attachment)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Attachment attachment = (Attachment)obj;
 
 		long primaryKey = attachment.getPrimaryKey();
 
@@ -382,6 +409,16 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -459,6 +496,7 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 

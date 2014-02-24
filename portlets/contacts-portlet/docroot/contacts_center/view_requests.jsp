@@ -23,10 +23,10 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="you-have-no-pending-requests"
+	total="<%= SocialRequestLocalServiceUtil.getReceiverUserRequestsCount(themeDisplay.getUserId(), SocialRequestConstants.STATUS_PENDING) %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= SocialRequestLocalServiceUtil.getReceiverUserRequests(themeDisplay.getUserId(), SocialRequestConstants.STATUS_PENDING, searchContainer.getStart(), searchContainer.getEnd()) %>"
-		total="<%= SocialRequestLocalServiceUtil.getReceiverUserRequestsCount(themeDisplay.getUserId(), SocialRequestConstants.STATUS_PENDING) %>"
 	/>
 
 	<liferay-ui:search-container-row
@@ -60,7 +60,7 @@
 
 			<div class="lfr-user-data">
 				<div class="lfr-user-data-title">
-					<liferay-ui:message arguments="<%= creatorUserName %>" key="request-social-networking-summary-add-connection" />
+					<liferay-ui:message arguments="<%= creatorUserName %>" key="request-social-networking-summary-add-connection" translateArguments="<%= false %>" />
 				</div>
 			</div>
 

@@ -92,26 +92,32 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 	public EntryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Entry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Entry.class.getName();
 	}
@@ -126,6 +132,9 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		attributes.put("toUserId", getToUserId());
 		attributes.put("content", getContent());
 		attributes.put("flag", getFlag());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -169,18 +178,22 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		}
 	}
 
+	@Override
 	public long getEntryId() {
 		return _entryId;
 	}
 
+	@Override
 	public void setEntryId(long entryId) {
 		_entryId = entryId;
 	}
 
+	@Override
 	public long getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(long createDate) {
 		_columnBitmask = -1L;
 
@@ -197,10 +210,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalCreateDate;
 	}
 
+	@Override
 	public long getFromUserId() {
 		return _fromUserId;
 	}
 
+	@Override
 	public void setFromUserId(long fromUserId) {
 		_columnBitmask |= FROMUSERID_COLUMN_BITMASK;
 
@@ -213,10 +228,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		_fromUserId = fromUserId;
 	}
 
+	@Override
 	public String getFromUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getFromUserId(), "uuid", _fromUserUuid);
 	}
 
+	@Override
 	public void setFromUserUuid(String fromUserUuid) {
 		_fromUserUuid = fromUserUuid;
 	}
@@ -225,10 +242,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalFromUserId;
 	}
 
+	@Override
 	public long getToUserId() {
 		return _toUserId;
 	}
 
+	@Override
 	public void setToUserId(long toUserId) {
 		_columnBitmask |= TOUSERID_COLUMN_BITMASK;
 
@@ -241,10 +260,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		_toUserId = toUserId;
 	}
 
+	@Override
 	public String getToUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getToUserId(), "uuid", _toUserUuid);
 	}
 
+	@Override
 	public void setToUserUuid(String toUserUuid) {
 		_toUserUuid = toUserUuid;
 	}
@@ -253,6 +274,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalToUserId;
 	}
 
+	@Override
 	public String getContent() {
 		if (_content == null) {
 			return StringPool.BLANK;
@@ -262,6 +284,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		}
 	}
 
+	@Override
 	public void setContent(String content) {
 		_columnBitmask |= CONTENT_COLUMN_BITMASK;
 
@@ -276,10 +299,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return GetterUtil.getString(_originalContent);
 	}
 
+	@Override
 	public int getFlag() {
 		return _flag;
 	}
 
+	@Override
 	public void setFlag(int flag) {
 		_flag = flag;
 	}
@@ -327,6 +352,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return entryImpl;
 	}
 
+	@Override
 	public int compareTo(Entry entry) {
 		int value = 0;
 
@@ -351,18 +377,15 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Entry)) {
 			return false;
 		}
 
-		Entry entry = null;
-
-		try {
-			entry = (Entry)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Entry entry = (Entry)obj;
 
 		long primaryKey = entry.getPrimaryKey();
 
@@ -377,6 +400,16 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -446,6 +479,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(22);
 

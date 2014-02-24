@@ -96,26 +96,32 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 	public WallEntryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _wallEntryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setWallEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _wallEntryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return WallEntry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return WallEntry.class.getName();
 	}
@@ -132,6 +138,9 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("comments", getComments());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -187,18 +196,22 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public long getWallEntryId() {
 		return _wallEntryId;
 	}
 
+	@Override
 	public void setWallEntryId(long wallEntryId) {
 		_wallEntryId = wallEntryId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -215,18 +228,22 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return _originalGroupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -239,10 +256,12 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -251,6 +270,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return _originalUserId;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -260,28 +280,34 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getComments() {
 		if (_comments == null) {
 			return StringPool.BLANK;
@@ -291,6 +317,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
 	}
@@ -340,6 +367,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return wallEntryImpl;
 	}
 
+	@Override
 	public int compareTo(WallEntry wallEntry) {
 		int value = 0;
 
@@ -356,18 +384,15 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof WallEntry)) {
 			return false;
 		}
 
-		WallEntry wallEntry = null;
-
-		try {
-			wallEntry = (WallEntry)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		WallEntry wallEntry = (WallEntry)obj;
 
 		long primaryKey = wallEntry.getPrimaryKey();
 
@@ -382,6 +407,16 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -473,6 +508,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 

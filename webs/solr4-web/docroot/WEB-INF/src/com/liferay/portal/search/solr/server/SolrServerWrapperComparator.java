@@ -22,6 +22,7 @@ import java.util.Comparator;
 public class SolrServerWrapperComparator
 	implements Comparator<SolrServerWrapper> {
 
+	@Override
 	public int compare(
 		SolrServerWrapper solrServerWrapper1,
 		SolrServerWrapper solrServerWrapper2) {
@@ -32,7 +33,7 @@ public class SolrServerWrapperComparator
 			return 1;
 		}
 		else if (solrServerWrapper1.getInvocationCount() <
-						solrServerWrapper2.getInvocationCount()) {
+					solrServerWrapper2.getInvocationCount()) {
 
 			return -1;
 		}

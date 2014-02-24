@@ -23,29 +23,28 @@
 String tabs1 = ParamUtil.getString(request, "tabs1");
 
 String keywords = ParamUtil.getString(request, "keywords");
-String searchKeywords = DAOParamUtil.getLike(request, "keywords");
 
 List<Group> groups = null;
 int groupsCount = 0;
 
 if (tabs1.equals("my-sites")) {
-	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, true, 0, maxResultSize);
-	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, true);
+	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, true, 0, maxResultSize);
+	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, true);
 
 	if (groupsCount == 0) {
 		tabs1 = "all-sites";
 
-		groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, false, 0, maxResultSize);
-		groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, false);
+		groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, false, 0, maxResultSize);
+		groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, false);
 	}
 }
 else if (tabs1.equals("my-favorites")) {
-	groups = SitesUtil.getFavoriteSitesGroups(themeDisplay.getUserId(), searchKeywords, 0, maxResultSize);
-	groupsCount = SitesUtil.getFavoriteSitesGroupsCount(themeDisplay.getUserId(), searchKeywords);
+	groups = SitesUtil.getFavoriteSitesGroups(themeDisplay.getUserId(), keywords, 0, maxResultSize);
+	groupsCount = SitesUtil.getFavoriteSitesGroupsCount(themeDisplay.getUserId(), keywords);
 }
 else {
-	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, false, 0, maxResultSize);
-	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchKeywords, false);
+	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, false, 0, maxResultSize);
+	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), keywords, false);
 }
 %>
 
@@ -57,10 +56,10 @@ else {
 			<input id="<portlet:namespace />dialogKeywords" size="30" type="text" value="<%= HtmlUtil.escape(keywords) %>" />
 
 			<span class="sites-tabs">
-				<aui:select label="" name="tabs1">
-					<aui:option label="all-sites" selected='<%= tabs1.equals("all-sites") %>' value="all-sites" />
-					<aui:option label="my-sites" selected='<%= tabs1.equals("my-sites") %>' value="my-sites" />
-					<aui:option label="my-favorites" selected='<%= tabs1.equals("my-favorites") %>' value="my-favorites" />
+				<aui:select label="" name="tabs1" value="<%= tabs1 %>">
+					<aui:option label="all-sites" value="all-sites" />
+					<aui:option label="my-sites" value="my-sites" />
+					<aui:option label="my-favorites" value="my-favorites" />
 				</aui:select>
 			</span>
 		</div>
@@ -74,160 +73,12 @@ else {
 		<div style="clear: both;"><!-- --></div>
 	</div>
 
-	<ul class="directory-list">
-
-		<%
-		boolean alternate = false;
-
-		for (Group group : groups) {
-			String classNames = StringPool.BLANK;
-
-			ExpandoBridge expandoBridge = group.getExpandoBridge();
-
-			if (SocialOfficeServiceUtil.isSocialOfficeGroup(group.getGroupId())) {
-				classNames += "social-office-enabled ";
-			}
-
-			boolean member = GroupLocalServiceUtil.hasUserGroup(themeDisplay.getUserId(), group.getGroupId());
-
-			if (member) {
-				classNames += "member ";
-			}
-
-			if (alternate) {
-				classNames += "alt";
-			}
-		%>
-
-			<li class="<%= classNames %>">
-				<c:choose>
-					<c:when test="<%= !FavoriteSiteLocalServiceUtil.isFavoriteSite(themeDisplay.getUserId(), group.getGroupId()) %>">
-						<span class="action favorite">
-							<liferay-portlet:actionURL name="updateFavorites" var="favoriteURL">
-								<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-								<portlet:param name="portletResource" value="<%= portletResource %>" />
-								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-							</liferay-portlet:actionURL>
-
-							<a class="favorite-site" href="<%= favoriteURL %>"><liferay-ui:message key="favorite" /></a>
-						</span>
-					</c:when>
-					<c:otherwise>
-						<span class="action unfavorite">
-							<liferay-portlet:actionURL name="updateFavorites" var="unfavoriteURL">
-								<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-								<portlet:param name="portletResource" value="<%= portletResource %>" />
-								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-							</liferay-portlet:actionURL>
-
-							<a class="unfavorite-site" href="<%= unfavoriteURL %>"><liferay-ui:message key="unfavorite" /></a>
-						</span>
-					</c:otherwise>
-				</c:choose>
-
-				<c:choose>
-					<c:when test="<%= !member %>">
-						<c:choose>
-							<c:when test="<%= group.getType() == GroupConstants.TYPE_SITE_OPEN %>">
-								<span class="action join">
-									<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_MEMBERSHIPS_ADMIN %>" var="joinURL" windowState="<%= WindowState.NORMAL.toString() %>">
-										<portlet:param name="struts_action" value="/sites_admin/edit_site_assignments" />
-										<portlet:param name="<%= Constants.CMD %>" value="group_users" />
-										<portlet:param name="redirect" value="<%= currentURL %>" />
-										<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-										<portlet:param name="addUserIds" value="<%= String.valueOf(user.getUserId()) %>" />
-									</liferay-portlet:actionURL>
-
-									<a class="join-site" href="<%= joinURL %>"><liferay-ui:message key="join" /></a>
-								</span>
-							</c:when>
-							<c:when test="<%= group.getType() == GroupConstants.TYPE_SITE_RESTRICTED && !MembershipRequestLocalServiceUtil.hasMembershipRequest(user.getUserId(), group.getGroupId(), MembershipRequestConstants.STATUS_PENDING) %>">
-								<span class="action request">
-									<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_MEMBERSHIPS_ADMIN %>" var="membershipRequestURL" windowState="<%= WindowState.NORMAL.toString() %>">
-										<portlet:param name="struts_action" value="/sites_admin/post_membership_request" />
-										<portlet:param name="redirect" value="<%= currentURL %>" />
-										<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-										<portlet:param name="comments" value='<%= LanguageUtil.format(pageContext, "x-wishes-to-join-x", new String[] {user.getFullName(), group.getDescriptiveName(locale)}) %>' />
-									</liferay-portlet:actionURL>
-
-									<a class="request-site" href="<%= membershipRequestURL %>"><liferay-ui:message key="request-membership" /></a>
-								</span>
-							</c:when>
-							<c:when test="<%= MembershipRequestLocalServiceUtil.hasMembershipRequest(user.getUserId(), group.getGroupId(), MembershipRequestConstants.STATUS_PENDING) %>">
-								<span class="action requested">
-									<a><liferay-ui:message key="membership-requested" /></a>
-								</span>
-							</c:when>
-						</c:choose>
-					</c:when>
-					<c:otherwise>
-						<span class="action leave">
-							<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_MEMBERSHIPS_ADMIN %>" var="leaveURL" windowState="<%= WindowState.NORMAL.toString() %>">
-								<portlet:param name="struts_action" value="/sites_admin/edit_site_assignments" />
-								<portlet:param name="<%= Constants.CMD %>" value="group_users" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-								<portlet:param name="removeUserIds" value="<%= String.valueOf(user.getUserId()) %>" />
-							</liferay-portlet:actionURL>
-
-							<a class="leave-site" href="<%= leaveURL %>"><liferay-ui:message key="leave" /></a>
-						</span>
-					</c:otherwise>
-				</c:choose>
-
-				<c:choose>
-					<c:when test="<%= GroupPermissionUtil.contains(permissionChecker, group.getGroupId(), ActionKeys.DELETE) %>">
-						<span class="action delete">
-							<liferay-portlet:actionURL portletName="<%= PortletKeys.SITES_ADMIN %>" var="deleteURL" windowState="<%= WindowState.NORMAL.toString() %>">
-								<portlet:param name="struts_action" value="/sites_admin/edit_site" />
-								<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-							</liferay-portlet:actionURL>
-
-							<a class="delete-site" href="<%= deleteURL %>"><liferay-ui:message key="delete" /></a>
-						</span>
-					</c:when>
-					<c:otherwise>
-						<span class="action-not-allowed"></span>
-					</c:otherwise>
-				</c:choose>
-
-				<span class="name">
-					<c:choose>
-						<c:when test="<%= (group.hasPrivateLayouts() && member) || group.hasPublicLayouts() %>">
-							<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_REDIRECTOR %>" var="siteURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>">
-								<portlet:param name="struts_action" value="/my_sites/view" />
-								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-								<portlet:param name="privateLayout" value="<%= String.valueOf(!group.hasPublicLayouts()) %>" />
-							</liferay-portlet:actionURL>
-
-							<a href="<%= siteURL %>"><%= HtmlUtil.escape(group.getDescriptiveName(locale)) %></a>
-						</c:when>
-						<c:otherwise>
-							<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>
-						</c:otherwise>
-					</c:choose>
-				</span>
-
-				<span class="description">
-					<%= HtmlUtil.escape(group.getDescription()) %>
-				</span>
-			</li>
-
-		<%
-			alternate = !alternate;
-		}
-		%>
-
-	</ul>
+	<ul class="directory-list"></ul>
 
 	<aui:button-row>
 		<div class="directory-navigation buttons-left">
 			<span class="page-indicator">
-				<%= LanguageUtil.format(pageContext, "page-x-of-x", new String[] {"<span class=\"current\">1</span>", "<span class=\"total\">" + String.valueOf((int)Math.ceil(groupsCount / (float)maxResultSize)) + "</span>"}) %>
+				<%= LanguageUtil.format(pageContext, "page-x-of-x", new String[] {"<span class=\"current\">1</span>", "<span class=\"total\">" + String.valueOf((int)Math.ceil(groupsCount / (float)maxResultSize)) + "</span>"}, false) %>
 			</span>
 		</div>
 	</aui:button-row>
@@ -253,11 +104,11 @@ else {
 			minQueryLength: 0,
 			requestTemplate: function(query) {
 				return {
-					directory: true,
-					end: <%= maxResultSize %>,
-					keywords: query,
-					searchTab: sitesTabsSelect.get('value'),
-					start: 0
+					<portlet:namespace />directory: true,
+					<portlet:namespace />end: <%= maxResultSize %>,
+					<portlet:namespace />keywords: query,
+					<portlet:namespace />searchTab: sitesTabsSelect.get('value'),
+					<portlet:namespace />start: 0
 				}
 			},
 			resultTextLocator: function(response) {
@@ -272,11 +123,13 @@ else {
 
 				return result;
 			},
-			source: Liferay.SO.Sites.createDataSource('<portlet:resourceURL id="getSites" />')
+			source: Liferay.SO.Sites.createDataSource('<portlet:resourceURL id="getSites" />', '<portlet:namespace />')
 		}
 	);
 
 	Liferay.SO.Sites.createDirectoryList(directoryList);
+
+	directoryList.sendRequest();
 
 	var updateDirectoryList = function(event) {
 		var data = A.JSON.parse(event.data.responseText);
@@ -327,8 +180,15 @@ else {
 
 						var name = result.name;
 
-						if (result.url) {
-							name = '<a href="' + result.url + '">' + name + '</a>';
+						if (result.publicLayoutsURL) {
+							name = '<a href="' + result.publicLayoutsURL + '">' + name + '</a>';
+
+							if (result.privateLayoutsURL) {
+								name += '<a class="private-pages" href="' + result.privateLayoutsURL + '"> (<liferay-ui:message key="private-pages" />)</a>';
+							}
+						}
+						else if (!result.publicLayoutsURL && result.privateLayoutsURL) {
+							name = '<a href="' + result.privateLayoutsURL + '">' + name + '</a>';
 						}
 
 						return A.Lang.sub(
@@ -382,11 +242,11 @@ else {
 
 		return function(query) {
 			return {
-				directory: true,
-				end: end,
-				keywords: query,
-				searchTab: sitesTabsSelect.get('value'),
-				start: start
+				<portlet:namespace />directory: true,
+				<portlet:namespace />end: end,
+				<portlet:namespace />keywords: query,
+				<portlet:namespace />searchTab: sitesTabsSelect.get('value'),
+				<portlet:namespace />start: start
 			}
 		};
 	};
@@ -454,20 +314,20 @@ else {
 				var unescapedSiteName = Liferay.Util.unescapeHTML(siteName.getContent());
 
 				if (currentTargetClass == "leave-site") {
-					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-leave-x", new String[] {"' + unescapedSiteName + '"}) %>';
-					siteAction = '<%= LanguageUtil.format(pageContext, "you-left-x", new String[] {"' + unescapedSiteName + '"}) %>';
+					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-leave-x", "' + unescapedSiteName + '", false) %>';
+					siteAction = '<%= LanguageUtil.format(pageContext, "you-left-x", new String[] {"' + unescapedSiteName + '"}, false) %>';
 				}
 				else if (currentTargetClass == "join-site") {
-					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-join-x", new String[] {"' + unescapedSiteName + '"}) %>';
-					siteAction = '<%= LanguageUtil.format(pageContext, "you-joined-x", new String[] {"' + unescapedSiteName + '"}) %>';
+					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-join-x", "' + unescapedSiteName + '", false) %>';
+					siteAction = '<%= LanguageUtil.format(pageContext, "you-joined-x", new String[] {"' + unescapedSiteName + '"}, false) %>';
 				}
 				else if (currentTargetClass == "request-site") {
-					confirmMessage = '<%= LanguageUtil.format(pageContext, "this-is-a-restricted-site-do-you-want-to-send-a-membership-request-to-x", new String[] {"' + unescapedSiteName + '"}) %>';
+					confirmMessage = '<%= LanguageUtil.format(pageContext, "this-is-a-restricted-site-do-you-want-to-send-a-membership-request-to-x", "' + unescapedSiteName + '", false) %>';
 					siteAction = '<%= LanguageUtil.get(pageContext, "your-membership-request-has-been-sent") %>';
 				}
 				else {
-					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-delete-x", new String[] {"' + unescapedSiteName + '"}) %>';
-					siteAction = '<%= LanguageUtil.format(pageContext, "you-deleted-x", new String[] {"' + unescapedSiteName + '"}) %>';
+					confirmMessage = '<%= LanguageUtil.format(pageContext, "are-you-sure-you-want-to-delete-x", "' + unescapedSiteName + '", false) %>';
+					siteAction = '<%= LanguageUtil.format(pageContext, "you-deleted-x", new String[] {"' + unescapedSiteName + '"}, false) %>';
 				}
 
 				if (confirm(confirmMessage)) {

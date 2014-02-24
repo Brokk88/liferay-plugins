@@ -102,26 +102,32 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	public MemberRequestModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setMemberRequestId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return MemberRequest.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return MemberRequest.class.getName();
 	}
@@ -142,6 +148,9 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		attributes.put("invitedRoleId", getInvitedRoleId());
 		attributes.put("invitedTeamId", getInvitedTeamId());
 		attributes.put("status", getStatus());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -221,18 +230,22 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public long getMemberRequestId() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setMemberRequestId(long memberRequestId) {
 		_memberRequestId = memberRequestId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -249,30 +262,37 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return _originalGroupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -282,28 +302,34 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getKey() {
 		if (_key == null) {
 			return StringPool.BLANK;
@@ -313,6 +339,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public void setKey(String key) {
 		_columnBitmask |= KEY_COLUMN_BITMASK;
 
@@ -327,10 +354,12 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return GetterUtil.getString(_originalKey);
 	}
 
+	@Override
 	public long getReceiverUserId() {
 		return _receiverUserId;
 	}
 
+	@Override
 	public void setReceiverUserId(long receiverUserId) {
 		_columnBitmask |= RECEIVERUSERID_COLUMN_BITMASK;
 
@@ -343,11 +372,13 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		_receiverUserId = receiverUserId;
 	}
 
+	@Override
 	public String getReceiverUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getReceiverUserId(), "uuid",
 			_receiverUserUuid);
 	}
 
+	@Override
 	public void setReceiverUserUuid(String receiverUserUuid) {
 		_receiverUserUuid = receiverUserUuid;
 	}
@@ -356,26 +387,32 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return _originalReceiverUserId;
 	}
 
+	@Override
 	public long getInvitedRoleId() {
 		return _invitedRoleId;
 	}
 
+	@Override
 	public void setInvitedRoleId(long invitedRoleId) {
 		_invitedRoleId = invitedRoleId;
 	}
 
+	@Override
 	public long getInvitedTeamId() {
 		return _invitedTeamId;
 	}
 
+	@Override
 	public void setInvitedTeamId(long invitedTeamId) {
 		_invitedTeamId = invitedTeamId;
 	}
 
+	@Override
 	public int getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(int status) {
 		_columnBitmask |= STATUS_COLUMN_BITMASK;
 
@@ -441,6 +478,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return memberRequestImpl;
 	}
 
+	@Override
 	public int compareTo(MemberRequest memberRequest) {
 		int value = 0;
 
@@ -458,18 +496,15 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MemberRequest)) {
 			return false;
 		}
 
-		MemberRequest memberRequest = null;
-
-		try {
-			memberRequest = (MemberRequest)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		MemberRequest memberRequest = (MemberRequest)obj;
 
 		long primaryKey = memberRequest.getPrimaryKey();
 
@@ -484,6 +519,16 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -597,6 +642,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 

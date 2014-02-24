@@ -35,7 +35,9 @@ import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.theme.ThemeDisplay;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,14 +56,9 @@ public class CalendarUtil {
 
 		List<CalendarBooking> calendarBookings =
 			CalendarBookingLocalServiceUtil.search(
-				themeDisplay.getCompanyId(),
-				new long[] {
-					0, themeDisplay.getCompanyGroupId(),
-					themeDisplay.getScopeGroupId()
-				},
-				calendarIds, new long[0], -1, null, startTime, endTime, true,
-				statuses, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				(OrderByComparator)null);
+				themeDisplay.getCompanyId(), null, calendarIds, new long[0], -1,
+				null, startTime, endTime, true, statuses, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 
 		Map<Integer, Map<Integer, List<Integer>>> rulesMap =
 			new HashMap<Integer, Map<Integer, List<Integer>>>();
@@ -132,6 +129,23 @@ public class CalendarUtil {
 		}
 
 		return jsonObject;
+	}
+
+	public static Collection<CalendarResource> getCalendarResources(
+			List<CalendarBooking> calendarBookings)
+		throws PortalException, SystemException {
+
+		Set<CalendarResource> calendarResources =
+			new HashSet<CalendarResource>();
+
+		for (CalendarBooking calendarBooking : calendarBookings) {
+			CalendarResource calendarResource =
+				calendarBooking.getCalendarResource();
+
+			calendarResources.add(calendarResource);
+		}
+
+		return calendarResources;
 	}
 
 	public static OrderByComparator getOrderByComparator(
@@ -218,7 +232,6 @@ public class CalendarUtil {
 		jsonObject.put("defaultCalendar", calendar.isDefaultCalendar());
 		jsonObject.put("classNameId", calendarResource.getClassNameId());
 		jsonObject.put("classPK", calendarResource.getClassPK());
-		jsonObject.put("global", calendarResource.isGlobal());
 		jsonObject.put("groupId", calendar.getGroupId());
 		jsonObject.put("name", calendar.getName(themeDisplay.getLocale()));
 		jsonObject.put(
@@ -226,6 +239,25 @@ public class CalendarUtil {
 			_getPermissionsJSONObject(
 				themeDisplay.getPermissionChecker(), calendar));
 		jsonObject.put("userId", calendar.getUserId());
+
+		return jsonObject;
+	}
+
+	public static JSONObject toCalendarResourceJSONObject(
+		ThemeDisplay themeDisplay, CalendarResource calendarResource) {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		jsonObject.put(
+			"calendarResourceId", calendarResource.getCalendarResourceId());
+		jsonObject.put("classNameId", calendarResource.getClassNameId());
+		jsonObject.put("classPK", calendarResource.getClassPK());
+		jsonObject.put("classUuid", calendarResource.getClassUuid());
+		jsonObject.put("code", calendarResource.getCode());
+		jsonObject.put("groupId", calendarResource.getGroupId());
+		jsonObject.put(
+			"name", calendarResource.getName(themeDisplay.getLocale()));
+		jsonObject.put("userId", calendarResource.getUserId());
 
 		return jsonObject;
 	}

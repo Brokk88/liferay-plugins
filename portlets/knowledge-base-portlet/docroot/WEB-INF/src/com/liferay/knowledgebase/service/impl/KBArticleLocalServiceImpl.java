@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntryThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -276,7 +277,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			new KBArticlePriorityComparator());
 
 		for (KBArticle kbArticle : kbArticles) {
-			deleteKBArticle(kbArticle);
+			kbArticleLocalService.deleteKBArticle(kbArticle);
 		}
 
 		// Subscriptions
@@ -304,7 +305,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			new KBArticlePriorityComparator());
 
 		for (KBArticle siblingKBArticle : siblingKBArticles) {
-			deleteKBArticle(siblingKBArticle);
+			kbArticleLocalService.deleteKBArticle(siblingKBArticle);
 		}
 
 		// Resources
@@ -367,7 +368,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		KBArticle kbArticle = getLatestKBArticle(
 			resourcePrimKey, WorkflowConstants.STATUS_ANY);
 
-		return deleteKBArticle(kbArticle);
+		return kbArticleLocalService.deleteKBArticle(kbArticle);
 	}
 
 	public void deleteKBArticles(long[] resourcePrimKeys)
@@ -377,8 +378,21 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			resourcePrimKeys, WorkflowConstants.STATUS_ANY, null);
 
 		for (KBArticle kbArticle : kbArticles) {
-			deleteKBArticle(kbArticle);
+			kbArticleLocalService.deleteKBArticle(kbArticle);
 		}
+	}
+
+	@Override
+	public KBArticle fetchLatestKBArticle(long resourcePrimKey, int status)
+		throws PortalException, SystemException {
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return kbArticlePersistence.fetchByResourcePrimKey_First(
+				resourcePrimKey, new KBArticleVersionComparator());
+		}
+
+		return kbArticlePersistence.fetchByR_S_First(
+			resourcePrimKey, status, new KBArticleVersionComparator());
 	}
 
 	public List<KBArticle> getCompanyKBArticles(
@@ -811,6 +825,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 			kbArticle = kbArticlePersistence.create(kbArticleId);
 
+			kbArticle.setUuid(serviceContext.getUuid());
 			kbArticle.setResourcePrimKey(oldKBArticle.getResourcePrimKey());
 			kbArticle.setGroupId(oldKBArticle.getGroupId());
 			kbArticle.setCompanyId(user.getCompanyId());
@@ -924,22 +939,28 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		long[] resourcePrimKeys = StringUtil.split(
 			StringUtil.merge(resourcePrimKeyToPriorityMap.keySet()), 0L);
 
-		List<KBArticle> kbArticles1 = getKBArticles(
+		List<KBArticle> kbArticles = getKBArticles(
 			resourcePrimKeys, WorkflowConstants.STATUS_ANY, null);
 
-		for (KBArticle kbArticle1 : kbArticles1) {
+		for (KBArticle kbArticle : kbArticles) {
 			double priority = resourcePrimKeyToPriorityMap.get(
-				kbArticle1.getResourcePrimKey());
+				kbArticle.getResourcePrimKey());
 
-			List<KBArticle> kbArticles2 = getKBArticleVersions(
-				kbArticle1.getResourcePrimKey(), WorkflowConstants.STATUS_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			updatePriority(kbArticle.getResourcePrimKey(), priority);
+		}
+	}
 
-			for (KBArticle kbArticle2 : kbArticles2) {
-				kbArticle2.setPriority(priority);
+	public void updatePriority(long resourcePrimKey, double priority)
+		throws PortalException, SystemException {
 
-				kbArticlePersistence.update(kbArticle2);
-			}
+		List<KBArticle> kbArticleVersions = getKBArticleVersions(
+			resourcePrimKey, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		for (KBArticle kbArticle : kbArticleVersions) {
+			kbArticle.setPriority(priority);
+
+			kbArticlePersistence.update(kbArticle);
 		}
 	}
 
@@ -992,8 +1013,15 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			userId, kbArticle, assetEntry.getCategoryIds(),
 			assetEntry.getTagNames());
 
-		assetEntryLocalService.deleteEntry(
-			KBArticle.class.getName(), kbArticle.getKbArticleId());
+		SystemEventHierarchyEntryThreadLocal.push(KBArticle.class);
+
+		try {
+			assetEntryLocalService.deleteEntry(
+				KBArticle.class.getName(), kbArticle.getKbArticleId());
+		}
+		finally {
+			SystemEventHierarchyEntryThreadLocal.pop(KBArticle.class);
+		}
 
 		assetEntryLocalService.updateVisible(
 			KBArticle.class.getName(), kbArticle.getResourcePrimKey(), true);
@@ -1115,7 +1143,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 					KBArticle.class.getName(), kbArticle.getClassPK(),
 					PortletKeys.KNOWLEDGE_BASE_ARTICLE,
 					kbArticle.getAttachmentsFolderId(), inputStream,
-					shortFileName, mimeType);
+					shortFileName, mimeType, true);
 			}
 			finally {
 				StreamUtil.cleanUp(inputStream);

@@ -115,6 +115,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the matching o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findByGadgetKey(String gadgetKey)
 		throws SystemException {
 		return findByGadgetKey(gadgetKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -134,6 +135,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the range of matching o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findByGadgetKey(String gadgetKey, int start,
 		int end) throws SystemException {
 		return findByGadgetKey(gadgetKey, start, end, null);
@@ -153,6 +155,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the ordered range of matching o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findByGadgetKey(String gadgetKey, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -273,6 +276,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer findByGadgetKey_First(String gadgetKey,
 		OrderByComparator orderByComparator)
 		throws NoSuchOAuthConsumerException, SystemException {
@@ -303,6 +307,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the first matching o auth consumer, or <code>null</code> if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer fetchByGadgetKey_First(String gadgetKey,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<OAuthConsumer> list = findByGadgetKey(gadgetKey, 0, 1,
@@ -324,6 +329,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer findByGadgetKey_Last(String gadgetKey,
 		OrderByComparator orderByComparator)
 		throws NoSuchOAuthConsumerException, SystemException {
@@ -354,9 +360,14 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the last matching o auth consumer, or <code>null</code> if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer fetchByGadgetKey_Last(String gadgetKey,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByGadgetKey(gadgetKey);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<OAuthConsumer> list = findByGadgetKey(gadgetKey, count - 1, count,
 				orderByComparator);
@@ -378,6 +389,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a o auth consumer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer[] findByGadgetKey_PrevAndNext(long oAuthConsumerId,
 		String gadgetKey, OrderByComparator orderByComparator)
 		throws NoSuchOAuthConsumerException, SystemException {
@@ -533,6 +545,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @param gadgetKey the gadget key
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByGadgetKey(String gadgetKey) throws SystemException {
 		for (OAuthConsumer oAuthConsumer : findByGadgetKey(gadgetKey,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -547,6 +560,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the number of matching o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByGadgetKey(String gadgetKey) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GADGETKEY;
 
@@ -629,6 +643,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer findByG_S(String gadgetKey, String serviceName)
 		throws NoSuchOAuthConsumerException, SystemException {
 		OAuthConsumer oAuthConsumer = fetchByG_S(gadgetKey, serviceName);
@@ -664,6 +679,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the matching o auth consumer, or <code>null</code> if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer fetchByG_S(String gadgetKey, String serviceName)
 		throws SystemException {
 		return fetchByG_S(gadgetKey, serviceName, true);
@@ -678,6 +694,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the matching o auth consumer, or <code>null</code> if a matching o auth consumer could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer fetchByG_S(String gadgetKey, String serviceName,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { gadgetKey, serviceName };
@@ -807,6 +824,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the o auth consumer that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer removeByG_S(String gadgetKey, String serviceName)
 		throws NoSuchOAuthConsumerException, SystemException {
 		OAuthConsumer oAuthConsumer = findByG_S(gadgetKey, serviceName);
@@ -822,6 +840,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the number of matching o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_S(String gadgetKey, String serviceName)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_S;
@@ -907,11 +926,16 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	private static final String _FINDER_COLUMN_G_S_SERVICENAME_2 = "oAuthConsumer.serviceName = ?";
 	private static final String _FINDER_COLUMN_G_S_SERVICENAME_3 = "(oAuthConsumer.serviceName IS NULL OR oAuthConsumer.serviceName = '')";
 
+	public OAuthConsumerPersistenceImpl() {
+		setModelClass(OAuthConsumer.class);
+	}
+
 	/**
 	 * Caches the o auth consumer in the entity cache if it is enabled.
 	 *
 	 * @param oAuthConsumer the o auth consumer
 	 */
+	@Override
 	public void cacheResult(OAuthConsumer oAuthConsumer) {
 		EntityCacheUtil.putResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
 			OAuthConsumerImpl.class, oAuthConsumer.getPrimaryKey(),
@@ -930,6 +954,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 *
 	 * @param oAuthConsumers the o auth consumers
 	 */
+	@Override
 	public void cacheResult(List<OAuthConsumer> oAuthConsumers) {
 		for (OAuthConsumer oAuthConsumer : oAuthConsumers) {
 			if (EntityCacheUtil.getResult(
@@ -956,7 +981,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 			CacheRegistryUtil.clear(OAuthConsumerImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(OAuthConsumerImpl.class.getName());
+		EntityCacheUtil.clearCache(OAuthConsumerImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -1051,6 +1076,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @param oAuthConsumerId the primary key for the new o auth consumer
 	 * @return the new o auth consumer
 	 */
+	@Override
 	public OAuthConsumer create(long oAuthConsumerId) {
 		OAuthConsumer oAuthConsumer = new OAuthConsumerImpl();
 
@@ -1068,6 +1094,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a o auth consumer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer remove(long oAuthConsumerId)
 		throws NoSuchOAuthConsumerException, SystemException {
 		return remove((Serializable)oAuthConsumerId);
@@ -1207,10 +1234,12 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 
 		EntityCacheUtil.putResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
 			OAuthConsumerImpl.class, oAuthConsumer.getPrimaryKey(),
-			oAuthConsumer);
+			oAuthConsumer, false);
 
 		clearUniqueFindersCache(oAuthConsumer);
 		cacheUniqueFindersCache(oAuthConsumer);
+
+		oAuthConsumer.resetOriginalValues();
 
 		return oAuthConsumer;
 	}
@@ -1271,6 +1300,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @throws com.liferay.opensocial.NoSuchOAuthConsumerException if a o auth consumer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer findByPrimaryKey(long oAuthConsumerId)
 		throws NoSuchOAuthConsumerException, SystemException {
 		return findByPrimaryKey((Serializable)oAuthConsumerId);
@@ -1331,6 +1361,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the o auth consumer, or <code>null</code> if a o auth consumer with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public OAuthConsumer fetchByPrimaryKey(long oAuthConsumerId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)oAuthConsumerId);
@@ -1342,6 +1373,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1358,6 +1390,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the range of o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -1376,6 +1409,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the ordered range of o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<OAuthConsumer> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1461,6 +1495,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (OAuthConsumer oAuthConsumer : findAll()) {
 			remove(oAuthConsumer);
@@ -1473,6 +1508,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 * @return the number of o auth consumers
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1559,6 +1595,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 		};
 
 	private static CacheModel<OAuthConsumer> _nullOAuthConsumerCacheModel = new CacheModel<OAuthConsumer>() {
+			@Override
 			public OAuthConsumer toEntityModel() {
 				return _nullOAuthConsumer;
 			}

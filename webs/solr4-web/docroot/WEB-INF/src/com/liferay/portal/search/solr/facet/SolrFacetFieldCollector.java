@@ -14,6 +14,7 @@
 
 package com.liferay.portal.search.solr.facet;
 
+import com.liferay.portal.kernel.search.facet.collector.DefaultTermCollector;
 import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.collector.TermCollector;
 
@@ -22,8 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 
 /**
  * @author Raymond Augé
@@ -42,10 +43,12 @@ public class SolrFacetFieldCollector implements FacetCollector {
 		}
 	}
 
+	@Override
 	public String getFieldName() {
 		return _fieldName;
 	}
 
+	@Override
 	public TermCollector getTermCollector(String term) {
 		Count count = _counts.get(term);
 
@@ -55,9 +58,10 @@ public class SolrFacetFieldCollector implements FacetCollector {
 			occurences = (int)count.getCount();
 		}
 
-		return new SolrTermCollector(term, occurences);
+		return new DefaultTermCollector(term, occurences);
 	}
 
+	@Override
 	public List<TermCollector> getTermCollectors() {
 		if (_termCollectors != null) {
 			return _termCollectors;
@@ -68,7 +72,7 @@ public class SolrFacetFieldCollector implements FacetCollector {
 		for (Map.Entry<String, Count> entry : _counts.entrySet()) {
 			Count count = entry.getValue();
 
-			TermCollector termCollector = new SolrTermCollector(
+			TermCollector termCollector = new DefaultTermCollector(
 				entry.getKey(), (int)count.getCount());
 
 			termCollectors.add(termCollector);

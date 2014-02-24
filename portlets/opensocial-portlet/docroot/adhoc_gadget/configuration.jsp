@@ -19,30 +19,23 @@
 <%
 String tabs2 = ParamUtil.getString(request, "tabs2", "gadget");
 
-String redirect = ParamUtil.getString(request, "redirect");
-
-String portletResource = ParamUtil.getString(request, "portletResource");
-
-PortletPreferences preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
-
-String url = PrefsParamUtil.getString(preferences, request, "url", StringPool.BLANK);
+String url = PrefsParamUtil.getString(portletPreferences, request, "url", StringPool.BLANK);
 
 Map<String, UserPref> userPrefs = (Map<String, UserPref>)renderRequest.getAttribute(WebKeys.USER_PREFS);
 
 Map<String, OAuthService> oAuthServices = (Map<String, OAuthService>)renderRequest.getAttribute(WebKeys.OAUTH_SERVICES);
 %>
 
-<liferay-portlet:renderURL portletConfiguration="true" var="portletURL">
+<liferay-portlet:actionURL portletConfiguration="true" var="configurationActionURL" />
+
+<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
 	<portlet:param name="tabs2" value="<%= tabs2 %>" />
-	<portlet:param name="redirect" value="<%= redirect %>" />
 </liferay-portlet:renderURL>
 
-<liferay-portlet:actionURL portletConfiguration="true" var="configurationURL" />
-
-<aui:form action="<%= configurationURL %>" method="post" name="fm">
+<aui:form action="<%= configurationActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="tabs2" type="hidden" value="<%= tabs2 %>" />
-	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
 	<%
 	String tabs2Names = "gadget";
@@ -68,7 +61,7 @@ Map<String, OAuthService> oAuthServices = (Map<String, OAuthService>)renderReque
 		<liferay-ui:tabs
 			names="<%= tabs2Names %>"
 			param="tabs2"
-			url="<%= portletURL %>"
+			url="<%= configurationRenderURL %>"
 		/>
 	</c:if>
 

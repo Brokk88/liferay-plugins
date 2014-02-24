@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.social.model.BaseSocialActivityInterpreter;
 import com.liferay.portlet.social.model.SocialActivity;
 
@@ -36,27 +36,28 @@ import com.liferay.portlet.social.model.SocialActivity;
 public class MicroblogsActivityInterpreter
 	extends BaseSocialActivityInterpreter {
 
+	@Override
 	public String[] getClassNames() {
 		return _CLASS_NAMES;
 	}
 
 	@Override
 	protected String getBody(
-		SocialActivity activity, ThemeDisplay themeDisplay) {
+		SocialActivity activity, ServiceContext serviceContext) {
 
-		return getUserName(activity.getUserId(), themeDisplay);
+		return getUserName(activity.getUserId(), serviceContext);
 	}
 
 	@Override
 	protected String getLink(
-		SocialActivity activity, ThemeDisplay themeDisplay) {
+		SocialActivity activity, ServiceContext serviceContext) {
 
 		return StringPool.BLANK;
 	}
 
 	@Override
 	protected String getTitle(
-			SocialActivity activity, ThemeDisplay themeDisplay)
+			SocialActivity activity, ServiceContext serviceContext)
 		throws Exception {
 
 		StringBundler sb = new StringBundler(5);
@@ -66,7 +67,7 @@ public class MicroblogsActivityInterpreter
 				activity.getClassPK());
 
 		String receiverUserName = getUserName(
-			activity.getReceiverUserId(), themeDisplay);
+			activity.getReceiverUserId(), serviceContext);
 
 		if (activity.getReceiverUserId() > 0) {
 			if (microblogsEntry.getType() ==
@@ -79,7 +80,7 @@ public class MicroblogsActivityInterpreter
 			else if (microblogsEntry.getType() ==
 						MicroblogsEntryConstants.TYPE_REPOST) {
 
-				sb.append(themeDisplay.translate("reposted-from"));
+				sb.append(serviceContext.translate("reposted-from"));
 				sb.append(" ");
 				sb.append(receiverUserName);
 				sb.append(": ");
@@ -94,7 +95,7 @@ public class MicroblogsActivityInterpreter
 	@Override
 	protected boolean hasPermissions(
 			PermissionChecker permissionChecker, SocialActivity activity,
-			String actionId, ThemeDisplay themeDisplay)
+			String actionId, ServiceContext serviceContext)
 		throws Exception {
 
 		MicroblogsEntry microblogsEntry =

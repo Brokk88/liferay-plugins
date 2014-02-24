@@ -108,26 +108,32 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	public MessageModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _messageId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setMessageId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _messageId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Message.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Message.class.getName();
 	}
@@ -155,6 +161,9 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		attributes.put("flags", getFlags());
 		attributes.put("size", getSize());
 		attributes.put("remoteMessageId", getRemoteMessageId());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -276,18 +285,22 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public long getMessageId() {
 		return _messageId;
 	}
 
+	@Override
 	public void setMessageId(long messageId) {
 		_messageId = messageId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -304,22 +317,27 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		return _originalCompanyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -329,38 +347,47 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public long getAccountId() {
 		return _accountId;
 	}
 
+	@Override
 	public void setAccountId(long accountId) {
 		_accountId = accountId;
 	}
 
+	@Override
 	public long getFolderId() {
 		return _folderId;
 	}
 
+	@Override
 	public void setFolderId(long folderId) {
 		_columnBitmask |= FOLDERID_COLUMN_BITMASK;
 
@@ -377,6 +404,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		return _originalFolderId;
 	}
 
+	@Override
 	public String getSender() {
 		if (_sender == null) {
 			return StringPool.BLANK;
@@ -386,10 +414,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setSender(String sender) {
 		_sender = sender;
 	}
 
+	@Override
 	public String getTo() {
 		if (_to == null) {
 			return StringPool.BLANK;
@@ -399,10 +429,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setTo(String to) {
 		_to = to;
 	}
 
+	@Override
 	public String getCc() {
 		if (_cc == null) {
 			return StringPool.BLANK;
@@ -412,10 +444,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setCc(String cc) {
 		_cc = cc;
 	}
 
+	@Override
 	public String getBcc() {
 		if (_bcc == null) {
 			return StringPool.BLANK;
@@ -425,20 +459,24 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setBcc(String bcc) {
 		_bcc = bcc;
 	}
 
+	@Override
 	public Date getSentDate() {
 		return _sentDate;
 	}
 
+	@Override
 	public void setSentDate(Date sentDate) {
 		_columnBitmask = -1L;
 
 		_sentDate = sentDate;
 	}
 
+	@Override
 	public String getSubject() {
 		if (_subject == null) {
 			return StringPool.BLANK;
@@ -448,10 +486,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setSubject(String subject) {
 		_subject = subject;
 	}
 
+	@Override
 	public String getPreview() {
 		if (_preview == null) {
 			return StringPool.BLANK;
@@ -461,10 +501,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setPreview(String preview) {
 		_preview = preview;
 	}
 
+	@Override
 	public String getBody() {
 		if (_body == null) {
 			return StringPool.BLANK;
@@ -474,10 +516,12 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setBody(String body) {
 		_body = body;
 	}
 
+	@Override
 	public String getFlags() {
 		if (_flags == null) {
 			return StringPool.BLANK;
@@ -487,22 +531,27 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		}
 	}
 
+	@Override
 	public void setFlags(String flags) {
 		_flags = flags;
 	}
 
+	@Override
 	public long getSize() {
 		return _size;
 	}
 
+	@Override
 	public void setSize(long size) {
 		_size = size;
 	}
 
+	@Override
 	public long getRemoteMessageId() {
 		return _remoteMessageId;
 	}
 
+	@Override
 	public void setRemoteMessageId(long remoteMessageId) {
 		_columnBitmask |= REMOTEMESSAGEID_COLUMN_BITMASK;
 
@@ -575,6 +624,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		return messageImpl;
 	}
 
+	@Override
 	public int compareTo(Message message) {
 		int value = 0;
 
@@ -589,18 +639,15 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Message)) {
 			return false;
 		}
 
-		Message message = null;
-
-		try {
-			message = (Message)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Message message = (Message)obj;
 
 		long primaryKey = message.getPrimaryKey();
 
@@ -615,6 +662,16 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -803,6 +860,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(61);
 

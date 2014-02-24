@@ -14,7 +14,6 @@
  */
 --%>
 
-
 <%@ include file="/init.jsp" %>
 
 <div>
@@ -65,7 +64,7 @@
 			}
 			%>
 
-			<%= StringUtil.merge(calendarResourcesNames, ", ") %>
+			<%= HtmlUtil.escape(StringUtil.merge(calendarResourcesNames, ", ")) %>
 		</c:if>
 
 		<c:if test="<%= calendarBooking.isRecurring() %>">

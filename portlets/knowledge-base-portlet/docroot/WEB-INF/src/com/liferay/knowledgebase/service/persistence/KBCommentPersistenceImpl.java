@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the k b comment service.
@@ -111,6 +113,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -128,6 +131,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -147,6 +151,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -267,6 +272,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -296,6 +302,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the first matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KBComment> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -316,6 +323,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -345,9 +353,14 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the last matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KBComment> list = findByUuid(uuid, count - 1, count,
 				orderByComparator);
@@ -369,6 +382,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment[] findByUuid_PrevAndNext(long kbCommentId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -524,6 +538,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (KBComment kbComment : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -538,6 +553,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -620,6 +636,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByUUID_G(String uuid, long groupId)
 		throws NoSuchCommentException, SystemException {
 		KBComment kbComment = fetchByUUID_G(uuid, groupId);
@@ -655,6 +672,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		return fetchByUUID_G(uuid, groupId, true);
@@ -669,6 +687,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { uuid, groupId };
@@ -775,6 +794,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the k b comment that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment removeByUUID_G(String uuid, long groupId)
 		throws NoSuchCommentException, SystemException {
 		KBComment kbComment = findByUUID_G(uuid, groupId);
@@ -790,6 +810,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
@@ -888,6 +909,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -908,6 +930,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid_C(String uuid, long companyId, int start,
 		int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -928,6 +951,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByUuid_C(String uuid, long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1058,6 +1082,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1092,6 +1117,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the first matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KBComment> list = findByUuid_C(uuid, companyId, 0, 1,
@@ -1114,6 +1140,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1148,9 +1175,14 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the last matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KBComment> list = findByUuid_C(uuid, companyId, count - 1, count,
 				orderByComparator);
@@ -1173,6 +1205,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment[] findByUuid_C_PrevAndNext(long kbCommentId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1333,6 +1366,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (KBComment kbComment : findByUuid_C(uuid, companyId,
@@ -1349,6 +1383,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1445,6 +1480,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByGroupId(long groupId)
 		throws SystemException {
 		return findByGroupId(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -1463,6 +1499,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByGroupId(long groupId, int start, int end)
 		throws SystemException {
 		return findByGroupId(groupId, start, end, null);
@@ -1482,6 +1519,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByGroupId(long groupId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1588,6 +1626,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByGroupId_First(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1617,6 +1656,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the first matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByGroupId_First(long groupId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KBComment> list = findByGroupId(groupId, 0, 1, orderByComparator);
@@ -1637,6 +1677,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1666,9 +1707,14 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the last matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByGroupId(groupId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KBComment> list = findByGroupId(groupId, count - 1, count,
 				orderByComparator);
@@ -1690,6 +1736,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment[] findByGroupId_PrevAndNext(long kbCommentId,
 		long groupId, OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -1831,6 +1878,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param groupId the group ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByGroupId(long groupId) throws SystemException {
 		for (KBComment kbComment : findByGroupId(groupId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1845,6 +1893,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByGroupId(long groupId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GROUPID;
 
@@ -1920,6 +1969,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByG_C(long groupId, long classNameId)
 		throws SystemException {
 		return findByG_C(groupId, classNameId, QueryUtil.ALL_POS,
@@ -1940,6 +1990,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByG_C(long groupId, long classNameId, int start,
 		int end) throws SystemException {
 		return findByG_C(groupId, classNameId, start, end, null);
@@ -1960,6 +2011,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByG_C(long groupId, long classNameId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2076,6 +2128,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByG_C_First(long groupId, long classNameId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2110,6 +2163,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the first matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByG_C_First(long groupId, long classNameId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KBComment> list = findByG_C(groupId, classNameId, 0, 1,
@@ -2132,6 +2186,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByG_C_Last(long groupId, long classNameId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2166,9 +2221,14 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the last matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByG_C_Last(long groupId, long classNameId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByG_C(groupId, classNameId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KBComment> list = findByG_C(groupId, classNameId, count - 1,
 				count, orderByComparator);
@@ -2191,6 +2251,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment[] findByG_C_PrevAndNext(long kbCommentId, long groupId,
 		long classNameId, OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2337,6 +2398,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param classNameId the class name ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByG_C(long groupId, long classNameId)
 		throws SystemException {
 		for (KBComment kbComment : findByG_C(groupId, classNameId,
@@ -2353,6 +2415,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_C(long groupId, long classNameId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_C;
@@ -2434,6 +2497,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByC_C(long classNameId, long classPK)
 		throws SystemException {
 		return findByC_C(classNameId, classPK, QueryUtil.ALL_POS,
@@ -2454,6 +2518,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByC_C(long classNameId, long classPK, int start,
 		int end) throws SystemException {
 		return findByC_C(classNameId, classPK, start, end, null);
@@ -2474,6 +2539,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findByC_C(long classNameId, long classPK, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2590,6 +2656,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByC_C_First(long classNameId, long classPK,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2624,6 +2691,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the first matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByC_C_First(long classNameId, long classPK,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KBComment> list = findByC_C(classNameId, classPK, 0, 1,
@@ -2646,6 +2714,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByC_C_Last(long classNameId, long classPK,
 		OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2680,9 +2749,14 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the last matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByC_C_Last(long classNameId, long classPK,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByC_C(classNameId, classPK);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KBComment> list = findByC_C(classNameId, classPK, count - 1,
 				count, orderByComparator);
@@ -2705,6 +2779,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment[] findByC_C_PrevAndNext(long kbCommentId,
 		long classNameId, long classPK, OrderByComparator orderByComparator)
 		throws NoSuchCommentException, SystemException {
@@ -2851,6 +2926,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param classPK the class p k
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_C(long classNameId, long classPK)
 		throws SystemException {
 		for (KBComment kbComment : findByC_C(classNameId, classPK,
@@ -2867,6 +2943,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_C(long classNameId, long classPK)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_C;
@@ -2945,6 +3022,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByU_C_C(long userId, long classNameId, long classPK)
 		throws NoSuchCommentException, SystemException {
 		KBComment kbComment = fetchByU_C_C(userId, classNameId, classPK);
@@ -2984,6 +3062,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByU_C_C(long userId, long classNameId, long classPK)
 		throws SystemException {
 		return fetchByU_C_C(userId, classNameId, classPK, true);
@@ -2999,6 +3078,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the matching k b comment, or <code>null</code> if a matching k b comment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByU_C_C(long userId, long classNameId, long classPK,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { userId, classNameId, classPK };
@@ -3097,6 +3177,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the k b comment that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment removeByU_C_C(long userId, long classNameId, long classPK)
 		throws NoSuchCommentException, SystemException {
 		KBComment kbComment = findByU_C_C(userId, classNameId, classPK);
@@ -3113,6 +3194,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of matching k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByU_C_C(long userId, long classNameId, long classPK)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_U_C_C;
@@ -3171,11 +3253,16 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	private static final String _FINDER_COLUMN_U_C_C_CLASSNAMEID_2 = "kbComment.classNameId = ? AND ";
 	private static final String _FINDER_COLUMN_U_C_C_CLASSPK_2 = "kbComment.classPK = ?";
 
+	public KBCommentPersistenceImpl() {
+		setModelClass(KBComment.class);
+	}
+
 	/**
 	 * Caches the k b comment in the entity cache if it is enabled.
 	 *
 	 * @param kbComment the k b comment
 	 */
+	@Override
 	public void cacheResult(KBComment kbComment) {
 		EntityCacheUtil.putResult(KBCommentModelImpl.ENTITY_CACHE_ENABLED,
 			KBCommentImpl.class, kbComment.getPrimaryKey(), kbComment);
@@ -3198,6 +3285,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 *
 	 * @param kbComments the k b comments
 	 */
+	@Override
 	public void cacheResult(List<KBComment> kbComments) {
 		for (KBComment kbComment : kbComments) {
 			if (EntityCacheUtil.getResult(
@@ -3224,7 +3312,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 			CacheRegistryUtil.clear(KBCommentImpl.class.getName());
 		}
 
-		EntityCacheUtil.clearCache(KBCommentImpl.class.getName());
+		EntityCacheUtil.clearCache(KBCommentImpl.class);
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
@@ -3359,6 +3447,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @param kbCommentId the primary key for the new k b comment
 	 * @return the new k b comment
 	 */
+	@Override
 	public KBComment create(long kbCommentId) {
 		KBComment kbComment = new KBCommentImpl();
 
@@ -3380,6 +3469,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment remove(long kbCommentId)
 		throws NoSuchCommentException, SystemException {
 		return remove((Serializable)kbCommentId);
@@ -3602,10 +3692,12 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 		}
 
 		EntityCacheUtil.putResult(KBCommentModelImpl.ENTITY_CACHE_ENABLED,
-			KBCommentImpl.class, kbComment.getPrimaryKey(), kbComment);
+			KBCommentImpl.class, kbComment.getPrimaryKey(), kbComment, false);
 
 		clearUniqueFindersCache(kbComment);
 		cacheUniqueFindersCache(kbComment);
+
+		kbComment.resetOriginalValues();
 
 		return kbComment;
 	}
@@ -3669,6 +3761,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @throws com.liferay.knowledgebase.NoSuchCommentException if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment findByPrimaryKey(long kbCommentId)
 		throws NoSuchCommentException, SystemException {
 		return findByPrimaryKey((Serializable)kbCommentId);
@@ -3729,6 +3822,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the k b comment, or <code>null</code> if a k b comment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KBComment fetchByPrimaryKey(long kbCommentId)
 		throws SystemException {
 		return fetchByPrimaryKey((Serializable)kbCommentId);
@@ -3740,6 +3834,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -3756,6 +3851,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the range of k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -3774,6 +3870,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the ordered range of k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KBComment> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -3859,6 +3956,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (KBComment kbComment : findAll()) {
 			remove(kbComment);
@@ -3871,6 +3969,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	 * @return the number of k b comments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -3900,6 +3999,11 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -3944,6 +4048,9 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(KBCommentPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static KBComment _nullKBComment = new KBCommentImpl() {
 			@Override
 			public Object clone() {
@@ -3957,6 +4064,7 @@ public class KBCommentPersistenceImpl extends BasePersistenceImpl<KBComment>
 		};
 
 	private static CacheModel<KBComment> _nullKBCommentCacheModel = new CacheModel<KBComment>() {
+			@Override
 			public KBComment toEntityModel() {
 				return _nullKBComment;
 			}

@@ -111,6 +111,18 @@ public class WSRPProducerLocalServiceImpl
 		return wsrpProducer;
 	}
 
+	@Override
+	public void deleteWSRPProducers(long companyId)
+		throws PortalException, SystemException {
+
+		List<WSRPProducer> wsrpProducers =
+			wsrpProducerPersistence.findByCompanyId(companyId);
+
+		for (WSRPProducer wsrpProducer : wsrpProducers) {
+			wsrpProducerLocalService.deleteWSRPProducer(wsrpProducer);
+		}
+	}
+
 	public WSRPProducer getWSRPProducer(String wsrpProducerUuid)
 		throws PortalException, SystemException {
 
@@ -185,7 +197,9 @@ public class WSRPProducerLocalServiceImpl
 
 		Group group = groupLocalService.addGroup(
 			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
-			0, name, null, type, null, true, true, null);
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, name, null, type, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, true,
+			null);
 
 		layoutLocalService.addLayout(
 			user.getUserId(), group.getGroupId(), false,

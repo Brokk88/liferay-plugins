@@ -55,8 +55,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
@@ -72,40 +73,12 @@ import org.apache.solr.common.params.FacetParams;
  */
 public class SolrIndexSearcher extends BaseIndexSearcher {
 
+	@Override
 	public Hits search(SearchContext searchContext, Query query)
 		throws SearchException {
 
 		try {
 			return doSearch(searchContext, query);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new SearchException(e.getMessage());
-		}
-	}
-
-	public Hits search(
-			String searchEngineId, long companyId, Query query, Sort[] sorts,
-			int start, int end)
-		throws SearchException {
-
-		try {
-			SolrQuery solrQuery = translateQuery(
-				companyId, query, sorts, start, end);
-
-			QueryResponse queryResponse = _solrServer.query(
-				solrQuery, METHOD.POST);
-
-			boolean allResults = false;
-
-			if (solrQuery.getRows() == 0) {
-				allResults = true;
-			}
-
-			return subset(
-				solrQuery, query, query.getQueryConfig(), queryResponse,
-				allResults);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -467,7 +440,7 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 					order = ORDER.desc;
 				}
 
-				solrQuery.addSortField(sortFieldName, order);
+				solrQuery.addSort(new SortClause(sortFieldName, order));
 			}
 		}
 

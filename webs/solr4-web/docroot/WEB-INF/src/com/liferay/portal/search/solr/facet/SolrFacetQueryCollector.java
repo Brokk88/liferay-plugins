@@ -14,6 +14,7 @@
 
 package com.liferay.portal.search.solr.facet;
 
+import com.liferay.portal.kernel.search.facet.collector.DefaultTermCollector;
 import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.collector.TermCollector;
 
@@ -40,16 +41,19 @@ public class SolrFacetQueryCollector implements FacetCollector {
 		}
 	}
 
+	@Override
 	public String getFieldName() {
 		return _fieldName;
 	}
 
+	@Override
 	public TermCollector getTermCollector(String term) {
 		Integer count = _counts.get(term);
 
-		return new SolrTermCollector(term, count.intValue());
+		return new DefaultTermCollector(term, count.intValue());
 	}
 
+	@Override
 	public List<TermCollector> getTermCollectors() {
 		if (_termCollectors != null) {
 			return _termCollectors;
@@ -60,7 +64,7 @@ public class SolrFacetQueryCollector implements FacetCollector {
 		for (Map.Entry<String, Integer> entry : _counts.entrySet()) {
 			Integer count = entry.getValue();
 
-			TermCollector termCollector = new SolrTermCollector(
+			TermCollector termCollector = new DefaultTermCollector(
 				entry.getKey(), count.intValue());
 
 			termCollectors.add(termCollector);

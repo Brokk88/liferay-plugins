@@ -19,7 +19,6 @@ package com.liferay.so.sites.portlet;
 
 import com.liferay.portal.DuplicateGroupException;
 import com.liferay.portal.GroupNameException;
-import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -185,9 +184,12 @@ public class SitesPortlet extends MVCPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		boolean directory = ParamUtil.getBoolean(resourceRequest, "directory");
 		int end = ParamUtil.getInteger(resourceRequest, "end", 10);
-		String keywords = DAOParamUtil.getLike(resourceRequest, "keywords");
+		String keywords = ParamUtil.getString(resourceRequest, "keywords");
 		int maxResultSize = ParamUtil.getInteger(
 			resourceRequest, "maxResultSize", 10);
 		String searchTab = ParamUtil.getString(resourceRequest, "searchTab");
@@ -201,12 +203,10 @@ public class SitesPortlet extends MVCPortlet {
 		optionsJSONObject.put("end", end);
 		optionsJSONObject.put("keywords", keywords);
 		optionsJSONObject.put("maxResultSize", maxResultSize);
+		optionsJSONObject.put("searchTab", searchTab);
 		optionsJSONObject.put("start", start);
 
 		jsonObject.put("options", optionsJSONObject);
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		List<Group> groups = null;
 		int groupsCount = 0;
@@ -221,7 +221,7 @@ public class SitesPortlet extends MVCPortlet {
 		}
 		else if (searchTab.equals("my-favorites")) {
 			groups = SitesUtil.getFavoriteSitesGroups(
-				themeDisplay.getUserId(), keywords, 0, end);
+				themeDisplay.getUserId(), keywords, start, end);
 			groupsCount = SitesUtil.getFavoriteSitesGroupsCount(
 				themeDisplay.getUserId(), keywords);
 		}
@@ -251,9 +251,7 @@ public class SitesPortlet extends MVCPortlet {
 			boolean member = GroupLocalServiceUtil.hasUserGroup(
 				themeDisplay.getUserId(), group.getGroupId());
 
-			if ((group.hasPrivateLayouts() && member) ||
-				group.hasPublicLayouts()) {
-
+			if (group.hasPrivateLayouts() && member) {
 				PortletURL portletURL = liferayPortletResponse.createActionURL(
 					PortletKeys.SITE_REDIRECTOR);
 
@@ -261,10 +259,24 @@ public class SitesPortlet extends MVCPortlet {
 				portletURL.setParameter(
 					"groupId", String.valueOf(group.getGroupId()));
 				portletURL.setParameter(
-					"privateLayout", String.valueOf(!group.hasPublicLayouts()));
+					"privateLayout", Boolean.TRUE.toString());
 				portletURL.setWindowState(WindowState.NORMAL);
 
-				groupJSONObject.put("url", portletURL.toString());
+				groupJSONObject.put("privateLayoutsURL", portletURL.toString());
+			}
+
+			if (group.hasPublicLayouts()) {
+				PortletURL portletURL = liferayPortletResponse.createActionURL(
+					PortletKeys.SITE_REDIRECTOR);
+
+				portletURL.setParameter("struts_action", "/my_sites/view");
+				portletURL.setParameter(
+					"groupId", String.valueOf(group.getGroupId()));
+				portletURL.setParameter(
+					"privateLayout", Boolean.FALSE.toString());
+				portletURL.setWindowState(WindowState.NORMAL);
+
+				groupJSONObject.put("publicLayoutsURL", portletURL.toString());
 			}
 
 			boolean socialOfficeGroup =
@@ -322,7 +334,7 @@ public class SitesPortlet extends MVCPortlet {
 						themeDisplay.getLocale(), "x-wishes-to-join-x",
 						new Object[] {
 							user.getFullName(), group.getDescriptiveName()
-						});
+						}, false);
 
 					membershipRequestURL.setParameter("comments", comments);
 
@@ -551,7 +563,7 @@ public class SitesPortlet extends MVCPortlet {
 		}
 
 		PortalClassInvoker.invoke(
-			true, _updateLayoutSetPrototypesMethodKey, group,
+			_updateLayoutSetPrototypesMethodKey, group,
 			publicLayoutSetPrototypeId, privateLayoutSetPrototypeId,
 			!privateLayout, privateLayout);
 
@@ -559,7 +571,7 @@ public class SitesPortlet extends MVCPortlet {
 				group.getGroupId(), privateLayout);
 
 		PortalClassInvoker.invoke(
-			true, _mergeLayoutSetPrototypeLayoutsMethodKey, group, layoutSet);
+			_mergeLayoutSetPrototypeLayoutsMethodKey, group, layoutSet);
 
 		long[] deleteLayoutIds = getLongArray(actionRequest, "deleteLayoutIds");
 

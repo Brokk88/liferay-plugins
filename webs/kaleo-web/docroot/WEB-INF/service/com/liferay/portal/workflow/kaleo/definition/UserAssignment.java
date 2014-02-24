@@ -23,6 +23,10 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class UserAssignment extends Assignment {
 
+	public UserAssignment() {
+		this (0, null, null);
+	}
+
 	public UserAssignment(long userId, String screenName, String emailAddress) {
 		super(AssignmentType.USER);
 
@@ -33,8 +37,8 @@ public class UserAssignment extends Assignment {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
+		if (this == obj) {
+			return true;
 		}
 
 		if (!(obj instanceof UserAssignment)) {
